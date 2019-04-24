@@ -544,28 +544,87 @@
 
     function outputjsondata(){
       var outputdata = [];
-      var numtoweekname ['','M','T','W','H','F','S']
+      var numtoweekname = ['','m','t','w','h','f','s'];
+      var temptime
       for (var j in venuejson){
         var mycourselist = venuejson[j].coursejson;
         var mycoursedata = venuejson[j].data;
+
         for (var jj=1; jj<=10; jj++){
           for (var kk=1; kk<=5; kk++){
             for (var jjj in mycoursedata[jj][kk]){
               var mycourse = jjj;
               var myvenue = j;
-              venuejson[j].coursejson[mycourse].timeslot[numtoweekname[jj]+kk] = 'x';
+              for (var n in venuejson[j].coursejson[mycourse].timeslot)
+              if (venuejson[j].coursejson[mycourse].timeslot[n]=='x')
+                delete venuejson[j].coursejson[mycourse].timeslot[n];
             }
           }
         }
+
+        for (var jj=1; jj<=10; jj++){
+          for (var kk=1; kk<=5; kk++){
+            for (var jjj in mycoursedata[jj][kk]){
+              var mycourse = jjj;
+              var myvenue = j;
+              if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk]+jj])
+                venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk]+jj] = 'x';
+            }
+          }
+        }
+
         for (var k in mycourselist){
           var mycourse = k;
           var myvenue = j;
           var myteacher = mycourselist[k].teacher;
+          var tempct = 0;
+          var nowpos = outputdata.length;
+          outputdata[nowpos] = [];
+          outputdata[nowpos][0] = myvenue;
+          outputdata[nowpos][7] = myteacher;
+          outputdata[nowpos][8] = mycourse;
           for (var jj in mycourselist[k].timeslot){
-            
+            tempct++;
+            outputdata[nowpos][tempct] = jj;
           }
         }
       }
+      return outputdata;
+    }
+
+    function savedata(){
+      var venuestring = JSON.stringify(venuejson);
+      var teacherstring = JSON.stringify(teacherjson);
+      var savename = prompt('NAME OF THIS RECORD');
+      if (savename){
+        var values = [
+          [savename],[venuestring],[teacherstring]
+        ];
+        var body = {
+          values: values
+        };
+        gapi.client.sheets.spreadsheets.values.update({
+           spreadsheetId: '1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc',
+           range: 'save'+'!A1:Z1000',
+           valueInputOption: valueInputOption,
+           resource: body
+        }).then((response) => {
+          var result = response.result;
+          console.log(result);
+        });
+      }
+    }
+
+    function downloadoutputcsv(){
+      var rows = outputjsondata();
+      var csvContent = "data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "output.csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click(); 
     }
 
     function getvenuecourselist(myvenue,x,y){
@@ -845,6 +904,7 @@
       for (var jj=0; jj<mycourselist.length; jj++){
         dfs(mylist,0,myvenue,mycourselist[jj].teacher,mylist[0].x,mylist[0].y,mycourselist[jj].course,myupdatedcourselist);
       }
+
       updatevisualdata(myvenue);
     }
 
@@ -921,8 +981,9 @@
           }
         }
       }
+      document.getElementById(myvenue+'fillct').innerHTML = venuejson[myvenue].fillct
       if (mynewwindow)
-        drawteacher();
+        updatevisualdata(); //drawteacher();
     }
 
     window.onbeforeunload = closingCode;
@@ -1046,6 +1107,7 @@
     </script>
     <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
     <button onclick="drawteacher()">Show Teacher Sheet</button>
+    <button onclick="downloadoutputcsv()">Download CSV</button>
     <div id="myshowsheet"></div>
     <br>
     <div style="height: 50%;"></div>
