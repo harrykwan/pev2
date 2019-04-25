@@ -32,6 +32,7 @@
 </html> -->
 <html>
   <head>
+
   	<style type="text/css">
   		button{
   			background: white;
@@ -69,6 +70,23 @@
   	</style>
   </head>
   <body>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDfDg0AzavkxcUXMzfMwIYIMl0_VR09uLU",
+        authDomain: "tactical-hope-234711.firebaseapp.com",
+        databaseURL: "https://tactical-hope-234711.firebaseio.com",
+        projectId: "tactical-hope-234711",
+        storageBucket: "tactical-hope-234711.appspot.com",
+        messagingSenderId: "427684691814"
+      };
+      firebase.initializeApp(config);
+      var db = firebase.firestore();
+    </script>
+
     <!--
     BEFORE RUNNING:
     ---------------
@@ -109,6 +127,7 @@
     document.onkeydown = function(evt) {
         evt = evt || window.event;
         if (evt.keyCode == 27) {
+            document.getElementById('popupform').hidden = true;
             document.getElementById('popupform').hidden = true;
         }
     };
@@ -596,23 +615,68 @@
       var venuestring = JSON.stringify(venuejson);
       var teacherstring = JSON.stringify(teacherjson);
       var savename = prompt('NAME OF THIS RECORD');
-      if (savename){
-        var values = [
-          [savename],[venuestring],[teacherstring]
-        ];
-        var body = {
-          values: values
-        };
-        gapi.client.sheets.spreadsheets.values.update({
-           spreadsheetId: '1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc',
-           range: 'save'+'!A1:Z1000',
-           valueInputOption: valueInputOption,
-           resource: body
-        }).then((response) => {
-          var result = response.result;
-          console.log(result);
+      // document.getElementById("savename").value = savename;
+      // document.getElementById("savevenuejson").value = venuestring;
+      // document.getElementById("saveteacherjson").value = teacherstring;
+      // document.getElementById("saveform").submit();
+      db.collection("savedata").doc(savename).set({
+          venuejson: venuestring,
+          teacherjson: teacherstring
+      })
+      .then(function() {
+          document.getElementById('popupform').hidden = true;
+          console.log("Document successfully written!");
+          alert('ok');
+      })
+      .catch(function(error) {
+          console.error("Error writing document: ", error);
+          alert('error');
+      });
+    }
+
+    myallsaveddata = {};
+    function getsaveddata(){
+      document.getElementById('popupform').innerHTML = '';
+      db.collection("savedata").get().then(function(querySnapshot) {
+          myallsaveddata = {};
+          querySnapshot.forEach(function(doc) {
+              // console.log(doc.id, " => ", doc.data());
+              myallsaveddata[doc.id] = doc.data();
+              document.getElementById('popupform').innerHTML+='<button onclick="choosesavedata(this)">'+doc.id+'</button><hr><button onclick="formaction(this)" style="border-color:black">cancel</button>'
+          });
+      });
+    }
+
+    function choosesavedata(x){
+      var myid = x.innerHTML;
+      venuejson = JSON.parse(myallsaveddata[myid].venuejson);
+      teacherjson = JSON.parse(myallsaveddata[myid].teacherjson);
+      for (var j in venuejson)
+        updatevisualdata(j);
+      if (mynewwindow)
+        updateteachertable();
+      alert('ok');
+      document.getElementById('popupform').hidden = true;
+    }
+
+    function loadsaveddata(){
+      document.getElementById('popupform').hidden = false;
+      getsaveddata();
+    }
+
+    function deletesaveddata(){
+      var mydocname = prompt("Enter the data id you want to delete");
+      if (mydocname){
+        db.collection("savedata").doc(mydocname).delete().then(function() {
+            console.log("Document successfully deleted!");
+            alert('ok');
+            document.getElementById('popupform').hidden = true;
+        }).catch(function(error) {
+            console.error("Error removing document: ", error);
+            alert('error');
         });
       }
+      
     }
 
     function downloadoutputcsv(){
@@ -1110,14 +1174,25 @@
     <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
     <button onclick="drawteacher()">Show Teacher Sheet</button>
     <button onclick="downloadoutputcsv()">Download CSV</button>
+    <br><br>
+    <button onclick="savedata()">Saved Now Data</button>
+    <button onclick="loadsaveddata()">Load Saved Data</button>
+    <button onclick="deletesaveddata()">Delete Saved Data</button>
     <div id="myshowsheet"></div>
     <br>
     <div style="height: 50%;"></div>
     <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
     <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
-    <br><br>
+    <br><br>s
     <a href="https://docs.google.com/spreadsheets/d/1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc/edit?usp=sharing" target="_blank">Google Sheet</a>
     <div hidden id="popupform" class="popupform" style=""></div>
+    <!-- <div hidden id="popupform" class="popupform"></div> -->
+   <!--  <iframe src="" name="myiframe"></iframe>
+    <form id="saveform" action="https://docs.google.com/forms/d/e/1FAIpQLScep0u_BDe6DnXO0Z-R4wP6b2gjYtb5ooWDNBOjzKoYHfJR2w/formResponse" target="myiframe" method="POST">
+      <textarea id="savename" name="entry.850665707"></textarea>
+      <textarea id="savevenuejson" name="entry.427184041"></textarea>
+      <textarea id="saveteacherjson" name="entry.1065539477"></textarea>
+    </form> -->
 
   </body>
 </html>
