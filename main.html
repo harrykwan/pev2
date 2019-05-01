@@ -159,6 +159,12 @@
         if (evt.keyCode == 27) {
             document.getElementById('popupform').hidden = true;
             document.getElementById('popupform').hidden = true;
+        } else if (evt.keyCode == 46){
+            var allbutton = document.getElementById('popupform').getElementsByTagName('button');
+            for (var j=0; j<allbutton.length; j++){
+              if (allbutton[j].innerHTML=='clear')
+                allbutton[j].click();
+            }
         }
     };
 
@@ -361,7 +367,7 @@
     		venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].slotct = tempct;
     		venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].venue = mycoursedata[j][0];
 
-
+        // console.log(mycoursedata[j][0]+' '+mycoursedata[j][5])
     		if (tempct<2){
     			// fillct+=2-tempct;
           venuejson[mycoursedata[j][0]].fillct += 2-tempct;
@@ -630,11 +636,76 @@
           var nowpos = outputdata.length;
           outputdata[nowpos] = [];
           outputdata[nowpos][0] = myvenue;
-          outputdata[nowpos][7] = myteacher;
-          outputdata[nowpos][8] = mycourse;
+          // outputdata[nowpos][7] = myteacher;
+          // outputdata[nowpos][8] = mycourse;
+          outputdata[nowpos][5] = myteacher;
+          outputdata[nowpos][6] = mycourse;
           for (var jj in mycourselist[k].timeslot){
             tempct++;
             outputdata[nowpos][tempct] = jj;
+          }
+        }
+      }
+      return outputdata;
+    }
+
+
+    function totimeslotname(x,y){
+      var xoutput = {m: 'Mo', t: 'Tu', w: 'We', h: 'Th', f:'Fr', s: 'Sa'};
+      var youtput = ['','08:30-09:15','09:30-10:15','10:30-11:15','11:30-12:15','12:30-13:15','13:30-14:15','14:30-15:15','15:30-16:15','16:30-17:15','17:30-18:15'];
+      return xoutput[x]+' '+youtput[y];
+    }
+
+     function outputjsondata2(){
+      var outputdata = [];
+      var numtoweekname = ['','m','t','w','h','f','s'];
+      var temptime
+      for (var j in venuejson){
+        var mycourselist = venuejson[j].coursejson;
+        var mycoursedata = venuejson[j].data;
+
+        for (var jj=1; jj<=10; jj++){
+          for (var kk=1; kk<=5; kk++){
+            for (var jjj in mycoursedata[jj][kk]){
+              var mycourse = jjj;
+              var myvenue = j;
+              for (var n in venuejson[j].coursejson[mycourse].timeslot)
+              if (venuejson[j].coursejson[mycourse].timeslot[n]=='x')
+                delete venuejson[j].coursejson[mycourse].timeslot[n];
+            }
+          }
+        }
+
+        for (var jj=1; jj<=10; jj++){
+          for (var kk=1; kk<=5; kk++){
+            for (var jjj in mycoursedata[jj][kk]){
+              var mycourse = jjj;
+              var myvenue = j;
+              if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk]+jj])
+                venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk]+jj] = 'x';
+            }
+          }
+        }
+
+        for (var k in mycourselist){
+          var mycourse = k;
+          var myvenue = j;
+          var myteacher = mycourselist[k].teacher;
+          var tempct = 0;
+          var nowpos = outputdata.length;
+          outputdata[nowpos] = [];
+          outputdata[nowpos][12] = myvenue;
+          // outputdata[nowpos][7] = myteacher;
+          // outputdata[nowpos][8] = mycourse;
+          outputdata[nowpos][1] = sportsjson[mycourse];
+          outputdata[nowpos][2] = myteacher;
+          // outputdata[nowpos][2] = teacherjson[myteacher].realname;
+          outputdata[nowpos][0] = mycourse;
+
+          for (var jj in mycourselist[k].timeslot){
+            outputdata[nowpos][tempct*2+4] = jj;
+            outputdata[nowpos][tempct*2+5] = totimeslotname(jj[0],parseInt(jj.substring(1)));
+            tempct++;
           }
         }
       }
@@ -672,8 +743,9 @@
           querySnapshot.forEach(function(doc) {
               // console.log(doc.id, " => ", doc.data());
               myallsaveddata[doc.id] = doc.data();
-              document.getElementById('popupform').innerHTML+='<button onclick="choosesavedata(this)">'+doc.id+'</button><hr><button onclick="formaction(this)" style="border-color:black">cancel</button>'
+              document.getElementById('popupform').innerHTML+='<button onclick="choosesavedata(this)">'+doc.id;
           });
+          document.getElementById('popupform').innerHTML+='</button><hr><button onclick="formaction(this)" style="border-color:black">cancel</button>'
       });
     }
 
@@ -711,6 +783,18 @@
 
     function downloadoutputcsv(){
       var rows = outputjsondata();
+      var csvContent = "data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "output.csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click(); 
+    }
+
+    function downloadoutputcsv2(){
+      var rows = outputjsondata2();
       var csvContent = "data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
       var encodedUri = encodeURI(csvContent);
       var link = document.createElement("a");
@@ -904,16 +988,16 @@
           return -1;
 
       //at most 3 lesson tgt
-      if (Object.keys(teacherjson[myteacher].data[x][y-1]).length>0&&Object.keys(teacherjson[myteacher].data[x][y-2]).length>0||
-        Object.keys(teacherjson[myteacher].data[x][y-1]).length>0&&Object.keys(teacherjson[myteacher].data[x][y+1]).length>0||
-        Object.keys(teacherjson[myteacher].data[x][y+1]).length>0&&Object.keys(teacherjson[myteacher].data[x][y+2]).length>0)
+      if (Object.keys(teacherjson[myteacher].data[x-1][y]).length>0&&Object.keys(teacherjson[myteacher].data[x-2][y]).length>0||
+        Object.keys(teacherjson[myteacher].data[x-1][y]).length>0&&Object.keys(teacherjson[myteacher].data[x+1][y]).length>0||
+        Object.keys(teacherjson[myteacher].data[x+1][y]).length>0&&Object.keys(teacherjson[myteacher].data[x+2][y]).length>0)
         return -1;
 
       //eight half lesson shouldn't > 2 each teacher
-      if (x==1&&teacherjson[myteacher].eighthalf>=2)
+      if (x==1&&teacherjson[myteacher].eighthalf>=1)
         return -1;
 
-      if (mycourse=='HCF'){
+      if (myvenue=='HCF'){
         var tempct = 0;
         for (var j in venuejson[myvenue].data[x][y]){
           if (sportsjson[mycourse]==sportsjson[j]){
@@ -932,7 +1016,7 @@
         }
         
         
-      } else if (mycourse=='LN'){
+      } else if (myvenue=='LN'){
         var tempct = 0;
         for (var j in venuejson[myvenue].data[x][y]){
           if (sportsjson[mycourse]==sportsjson[j]){
@@ -941,8 +1025,23 @@
         }
         if (tempct>=1)
           return -1;
-      } else if (mycourse=='UCG'){
-        
+      } else if (myvenue=='UCG'){
+        // var tempct = 0;
+        // for (var k=1; k<=10; k++){
+
+        //   for (var j in venuejson[myvenue].data[k][y]){
+        //     // console.log(sportsjson[mycourse],sportsjson[j])
+        //     if (sportsjson[mycourse]!=sportsjson[j]){
+
+        //       tempct++;
+        //       break;
+        //     }
+        //   }
+        //   if (tempct)
+        //     break;
+        // }
+        // if (tempct>=1)
+        //   return -1;
       } 
 
       return 1;
@@ -950,7 +1049,8 @@
     }
 
     function genorderlist(x){
-      var fillorderx = [2,3,6,7,8,9,4,1,5];
+      // var fillorderx = [2,3,6,7,8,9,4,5,1];
+      var fillorderx = [3,4,1,2,5,6,7,8,9];
       // var fillordery = [1,2,3,4,5];
       var fillordery = myallpossibley[x];
 
@@ -1011,6 +1111,7 @@
         var mylist = genorderlist(j);
         var mycourselist = getsortedcourselist(myupdatedcourselist,myvenue,mylist[0].x,mylist[0].y);
         for (var jj=0; jj<mycourselist.length; jj++){
+          dfsct = 0;
           dfs(mylist,0,myvenue,mycourselist[jj].teacher,mylist[0].x,mylist[0].y,mycourselist[jj].course,myupdatedcourselist);
         }
       }
@@ -1022,10 +1123,11 @@
       
     }
 
-    
+    var dfsct = 0;
     function dfs(mylist,n,myvenue,myteacher,x,y,mycourse,myupdatedcourselist){
       //console.log(n,myvenue,myteacher,x,y,mycourse,venuejson[myvenue].fillct);
-      if (venuejson[myvenue].fillct==0||n>950)
+      dfsct++;
+      if (venuejson[myvenue].fillct==0||dfsct>=1000)
         return;
       
 
@@ -1219,18 +1321,22 @@
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
     <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
-    <button onclick="drawteacher()">Show Teacher Sheet</button>
-    <button onclick="downloadoutputcsv()">Download CSV</button>
-    <br><br>
-    <button onclick="savedata()">Saved Now Data</button>
-    <button onclick="loadsaveddata()">Load Saved Data</button>
-    <button onclick="deletesaveddata()">Delete Saved Data</button>
+    <div style="position: fixed;top: 10px;  opacity: 0.8; ">
+      <button onclick="drawteacher()">Show Teacher Sheet</button>
+      <button onclick="downloadoutputcsv()">Download CSV</button>
+      <br>
+      <button onclick="savedata()">Saved Now Data</button>
+      <button onclick="loadsaveddata()">Load Saved Data</button>
+      <button onclick="deletesaveddata()">Delete Saved Data</button>
+    </div>
+    <div style="margin-top: 100px;"></div>
+
     <div id="myshowsheet"></div>
     <br>
     <div style="height: 50%;"></div>
     <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
     <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
-    <br><br>s
+    <br><br>
     <a href="https://docs.google.com/spreadsheets/d/1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc/edit?usp=sharing" target="_blank">Google Sheet</a>
     <div hidden id="popupform" class="popupform" style=""></div>
     <!-- <div hidden id="popupform" class="popupform"></div> -->
