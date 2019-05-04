@@ -656,6 +656,16 @@
       return xoutput[x]+' '+youtput[y];
     }
 
+    function comparetimeslot(x1,y1,x2,y2){
+      var xoutput = {m: 1, t: 2, w: 3, h: 4, f: 5, s: 6};
+      // console.log(xoutput[x1],y1,xoutput[x2],y2,(xoutput[x1]>xoutput[x2]||xoutput[x1]==xoutput[x2]&&y1>y2));
+      if (xoutput[x1]>xoutput[x2]||xoutput[x1]==xoutput[x2]&&y1>y2){
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+
      function outputjsondata2(){
       var outputdata = [];
       var numtoweekname = ['','m','t','w','h','f','s'];
@@ -707,6 +717,28 @@
             outputdata[nowpos][tempct*2+5] = totimeslotname(jj[0],parseInt(jj.substring(1)));
             tempct++;
           }
+
+          for (var jj=0; jj<4-1; jj++){
+            for (var kk=jj+1; kk<4; kk++){
+              if (outputdata[nowpos][jj*2+4]&&outputdata[nowpos][kk*2+4]){
+                var temp1 = outputdata[nowpos][jj*2+4];
+                var temp2 = outputdata[nowpos][kk*2+4];
+                // console.log(jj*2+4,temp2, kk*2+4, temp1);
+                // console.log(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1)),comparetimeslot(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1))));
+                if (comparetimeslot(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1)))==1){
+                  var temp = outputdata[nowpos][jj*2+4];
+                  outputdata[nowpos][jj*2+4] = outputdata[nowpos][kk*2+4];
+                  outputdata[nowpos][kk*2+4] = temp;
+                  var temp = outputdata[nowpos][jj*2+5];
+                  outputdata[nowpos][jj*2+5] = outputdata[nowpos][kk*2+5];
+                  outputdata[nowpos][kk*2+5] = temp;
+                }
+              }
+            }
+          }
+
+          console.log(outputdata[nowpos])
+
         }
       }
       return outputdata;
