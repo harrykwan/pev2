@@ -842,6 +842,20 @@
         // console.log(document.getElementById(j+'table'))
         // console.log(document.getElementById(j+'table'));
         if (document.getElementById(j+'table')){
+          for (var jj=1; jj<document.getElementById(j+'table').rows.length; jj++){
+            for (var kk=0; kk<document.getElementById(j+'table').rows[jj].cells.length; kk++){
+              var tempcourseid = document.getElementById(j+'table').rows[jj].cells[kk].innerHTML.split(' ');
+              tempcourseid = tempcourseid[tempcourseid.length-1];
+              if (tempcourseid){
+                // console.log(tempcourseid,sportsjson[tempcourseid])
+                if (sportsjson[tempcourseid]){
+                  document.getElementById(j+'table').rows[jj].cells[kk].innerHTML += ' '+ sportsjson[tempcourseid];
+                }
+              }
+              
+            }
+          }
+
           var rows = '<html><body><h1>'+j+'</h1>'+document.getElementById(j+'table').outerHTML+'</body></html>';
           var csvContent = "data:text/html;charset=utf-8,"+rows;//"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
           var encodedUri = encodeURI(csvContent);
@@ -863,8 +877,25 @@
       drawteacher();
       for (var j in teacherjson){
         // console.log(mynewwindow.document.getElementById(j+'table'))
-         console.log(j);
+
         if (mynewwindow.document.getElementById(j+'table')){
+
+
+          for (var jj=1; jj<mynewwindow.document.getElementById(j+'table').rows.length; jj++){
+            for (var kk=0; kk<mynewwindow.document.getElementById(j+'table').rows[jj].cells.length; kk++){
+              var tempcourseid = mynewwindow.document.getElementById(j+'table').rows[jj].cells[kk].innerHTML.split(' ');
+              tempcourseid = tempcourseid[tempcourseid.length-1];
+              if (tempcourseid){
+                // console.log(tempcourseid,sportsjson[tempcourseid])
+                if (sportsjson[tempcourseid]){
+                  mynewwindow.document.getElementById(j+'table').rows[jj].cells[kk].innerHTML += ' '+ sportsjson[tempcourseid];
+                }
+              }
+              
+            }
+          }
+          
+          
           var rows = '<html><body><h1>'+j+'</h1>'+mynewwindow.document.getElementById(j+'table').outerHTML+'</body></html>';
           var csvContent = "data:text/html;charset=utf-8,"+rows;//"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
           var encodedUri = encodeURI(csvContent);
