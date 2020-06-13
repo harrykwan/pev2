@@ -92,7 +92,8 @@
     firebase.initializeApp(config);
     var db = firebase.firestore();
   </script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <a href="#" class="yourlink">Download</a>
   <!--
     BEFORE RUNNING:
     ---------------
@@ -614,6 +615,16 @@
             for (jjj in tempdata) {
               mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1].innerHTML = tempdata[jjj] + ' ' +
                 jjj;
+              var temptd = mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1]
+              if (jjj.includes('X')) {
+                temptd.style.backgroundColor = '#a8ef61';
+              } else if (parseInt(jjj) % 10 == 0) {
+                temptd.style.backgroundColor = '#dda1ff';
+              } else if (parseInt(jjj) % 2 == 0) {
+                temptd.style.backgroundColor = '#ff74ae';
+              } else if (parseInt(jjj) % 2 == 1) {
+                temptd.style.backgroundColor = '#00bcff';
+              }
             }
           }
 
@@ -999,6 +1010,7 @@
           document.body.appendChild(link); // Required for FF
 
           link.click();
+
           if (!confirm('next?')) {
             return;
           }
