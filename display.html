@@ -551,6 +551,34 @@
         sportsjson[mysportsdata[j][0]] = mysportsdata[j][1];
       }
 
+
+      for (var j in venuejson) {
+        // console.log(document.getElementById(j+'table'))
+        // console.log(document.getElementById(j+'table'));
+        if (document.getElementById(j + 'table')) {
+          for (var jj = 1; jj < document.getElementById(j + 'table').rows.length; jj++) {
+            for (var kk = 0; kk < document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
+              var tempcourseid = document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(' ');
+              tempcourseid = tempcourseid[tempcourseid.length - 1];
+              if (tempcourseid) {
+                // console.log(tempcourseid,sportsjson[tempcourseid])
+                if (sportsjson[tempcourseid]) {
+                  document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[tempcourseid];
+                }
+              }
+
+            }
+          }
+
+
+        }
+      }
+
+
+
+
+
+
     }
 
     var teacherjson = {};
@@ -614,7 +642,7 @@
             var tempdata = teacherjson[j].data[jj][kk];
             for (jjj in tempdata) {
               mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1].innerHTML = tempdata[jjj] + ' ' +
-                jjj;
+                jjj + ' ' + sportsjson[jjj];
               var temptd = mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1]
               if (jjj.includes('X')) {
                 temptd.style.backgroundColor = '#a8ef61';
@@ -631,6 +659,8 @@
         }
 
       }
+
+
     }
 
     var mynewwindow;
@@ -938,22 +968,22 @@
 
     function downloadallvenuehtml() {
       for (var j in venuejson) {
-        // console.log(document.getElementById(j+'table'))
-        // console.log(document.getElementById(j+'table'));
+        console.log(document.getElementById(j + 'table'))
+        console.log(document.getElementById(j + 'table'));
         if (document.getElementById(j + 'table')) {
-          for (var jj = 1; jj < document.getElementById(j + 'table').rows.length; jj++) {
-            for (var kk = 0; kk < document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
-              var tempcourseid = document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(' ');
-              tempcourseid = tempcourseid[tempcourseid.length - 1];
-              if (tempcourseid) {
-                // console.log(tempcourseid,sportsjson[tempcourseid])
-                if (sportsjson[tempcourseid]) {
-                  document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[tempcourseid];
-                }
-              }
+          // for (var jj = 1; jj < document.getElementById(j + 'table').rows.length; jj++) {
+          //   for (var kk = 0; kk < document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
+          //     var tempcourseid = document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(' ');
+          //     tempcourseid = tempcourseid[tempcourseid.length - 1];
+          //     if (tempcourseid) {
+          //       // console.log(tempcourseid,sportsjson[tempcourseid])
+          //       if (sportsjson[tempcourseid]) {
+          //         document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[tempcourseid];
+          //       }
+          //     }
 
-            }
-          }
+          //   }
+          // }
 
           var rows = '<html><body><h1>' + j + '</h1>' + document.getElementById(j + 'table').outerHTML +
             '</body></html>';
