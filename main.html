@@ -482,7 +482,8 @@
             var temptd = temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
               temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd];
             temptd.innerHTML = tempfilldata;
-            temptd.style.backgroundColor = '#DDDDDD';
+            if (mycoursedata[j][7] == '*')
+              temptd.style.backgroundColor = '#DDDDDD';
             temptd.style.borderColor = colorlist[j - basept];
             // temptd.style.color = colorlist[j-basept];
             // temptd.style.backgroundColor = 'black';
