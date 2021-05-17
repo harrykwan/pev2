@@ -1234,6 +1234,7 @@
       var tempjsonx = x;
       var tempjsony = y;
       delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+      console.log(venuejson[myvenue].coursejson,mycourse)
       venuejson[myvenue].coursejson[mycourse].slotct--;
       venuejson[myvenue].fillct++;
       delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
