@@ -436,7 +436,18 @@
         for (var k = 1; k <= 4; k++) {
           var tempslot = mycoursedata[j][k];
           if (tempslot) {
-            // console.log(mycoursedata[j][0]+' '+mycoursedata[j][6]+' '+parseInt(tempslot.substring(1))+' '+weeknameshort[tempslot[0]])
+            // console.log(mycoursedata[j][0] + ' ' + mycoursedata[j][6] + ' ' + parseInt(tempslot.substring(1)) + ' ' +
+            // weeknameshort[tempslot[0]])
+            if (!venuejson[mycoursedata[j][0]]) {
+              console.log(mycoursedata[j][0] + ' not found')
+              document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][0] + ' not found'
+              document.getElementById('errormessagebox').hidden = false
+            }
+            if (!teacherjson[mycoursedata[j][5]]) {
+              console.log(mycoursedata[j][5] + ' not found')
+              document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][5] + ' not found'
+              document.getElementById('errormessagebox').hidden = false
+            }
             venuejson[mycoursedata[j][0]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
               mycoursedata[j][6]
             ] = mycoursedata[j][5];
@@ -471,7 +482,8 @@
             var temptd = temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
               temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd];
             temptd.innerHTML = tempfilldata;
-            temptd.style.backgroundColor = '#DDDDDD';
+            if (mycoursedata[j][7] == '*')
+              temptd.style.backgroundColor = '#DDDDDD';
             temptd.style.borderColor = colorlist[j - basept];
             // temptd.style.color = colorlist[j-basept];
             // temptd.style.backgroundColor = 'black';
@@ -1197,6 +1209,7 @@
       // var tempjsonx = tablextojsonx(myvenue,tablex);
       // var tempjsony = tableytojsony(myvenue,tablex,tabley);
       //console.log(checkcourseok(mycourse,myvenue,myteacher,x,y))
+      console.log(venuejson[myvenue].coursejson,mycourse)
       var tempjsonx = x;
       var tempjsony = y;
       venuejson[myvenue].data[tempjsonx][tempjsony][mycourse] = myteacher;
@@ -1220,15 +1233,18 @@
       // var tempjsony = tableytojsony(myvenue,tablex,tabley);
       var tempjsonx = x;
       var tempjsony = y;
-      delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+   
+      console.log(venuejson[myvenue].coursejson,mycourse)
       venuejson[myvenue].coursejson[mycourse].slotct--;
       venuejson[myvenue].fillct++;
-      delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
+      delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+    
       teacherjson[myteacher].fillct++;
       teacherjson[myteacher].dayct[tempjsony]--;
       if (tempjsonx == 1)
         teacherjson[myteacher].eighthalf--;
       teacherjson[myteacher].daydata[tempjsony][mycourse]--;
+      delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
     }
 
     function checkcourseok(mycourse, myvenue, myteacher, x, y) {
@@ -1667,12 +1683,17 @@
       return body.appendChild(tbl)
     }
 
-    handleSignInClick();
+    // handleSignInClick();
   </script>
   <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
     onreadystatechange="if (this.readyState === 'complete') this.onload()">
   </script>
   <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
+  <div id="errormessagebox"
+    style="position: fixed; top: 10; margin-left: auto; margin-right: auto; left: 0; right: 0; background-color: black; color: white; text-align: center; z-index: 9999; margin: 20px; padding: 10px;"
+    hidden>
+    ERROR:
+  </div>
   <div style="position: fixed;top: 10px;  opacity: 0.8; ">
     <button onclick="drawteacher()">Show Teacher Sheet</button>
     <button onclick="downloadoutputcsv()">Download CSV</button>
@@ -1680,9 +1701,9 @@
     <button onclick="downloadallvenuehtml()">Download all venue table</button>
     <button onclick="downloadallteacherhtml()">Download all teacher table</button>
     <br>
-    <button onclick="savedata()">Saved Now Data</button>
+    <!-- <button onclick="savedata()">Saved Now Data</button>
     <button onclick="loadsaveddata()">Load Saved Data</button>
-    <button onclick="deletesaveddata()">Delete Saved Data</button>
+    <button onclick="deletesaveddata()">Delete Saved Data</button> -->
   </div>
   <div style="margin-top: 100px;"></div>
 
