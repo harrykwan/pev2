@@ -1233,16 +1233,18 @@
       // var tempjsony = tableytojsony(myvenue,tablex,tabley);
       var tempjsonx = x;
       var tempjsony = y;
-      delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+   
       console.log(venuejson[myvenue].coursejson,mycourse)
       venuejson[myvenue].coursejson[mycourse].slotct--;
       venuejson[myvenue].fillct++;
-      delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
+      delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+    
       teacherjson[myteacher].fillct++;
       teacherjson[myteacher].dayct[tempjsony]--;
       if (tempjsonx == 1)
         teacherjson[myteacher].eighthalf--;
       teacherjson[myteacher].daydata[tempjsony][mycourse]--;
+      delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
     }
 
     function checkcourseok(mycourse, myvenue, myteacher, x, y) {
