@@ -31,67 +31,69 @@
 </body>
 </html> -->
 <html>
-  <head>
-    <style type="text/css">
-      button {
-        background: white;
-      }
 
-      table {
-        /*background: #EEEEEE;*/
-      }
+<head>
 
-      td {
-        /*text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;*/
-        /*font-weight: bold;*/
-      }
+  <style type="text/css">
+    button {
+      background: white;
+    }
 
-      /*td:hover{
+    table {
+      /*background: #EEEEEE;*/
+    }
+
+    td {
+      /*text-shadow: -.5px 0 black, 0 .5px black, .5px 0 black, 0 -.5px black;*/
+      /*font-weight: bold;*/
+    }
+
+    /*td:hover{
   			border-width: 4px;
   		}*/
-      .popupform {
-        position: fixed;
-        left: 0;
-        right: 0;
-        margin-left: auto;
-        margin-right: auto;
-        bottom: 0;
-        width: 80%;
-        /*height: 40%;*/
-        border: 1px solid black;
-        background-color: #eeeeee;
-        padding: 10px;
-        font-size: 15px;
-        border-radius: 5px;
-        overflow: scroll;
-        opacity: 0.9;
-      }
+    .popupform {
+      position: fixed;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      bottom: 0;
+      width: 80%;
+      /*height: 40%;*/
+      border: 1px solid black;
+      background-color: #EEEEEE;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 5px;
+      overflow: scroll;
+      opacity: 0.9;
+    }
 
-      .popupform > button {
-        margin: 10px;
-      }
-    </style>
-  </head>
+    .popupform>button {
+      margin: 10px;
+    }
+  </style>
+</head>
 
-  <body>
-    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
-    <script>
-      // Initialize Firebase
-      var config = {
-        apiKey: "AIzaSyDfDg0AzavkxcUXMzfMwIYIMl0_VR09uLU",
-        authDomain: "tactical-hope-234711.firebaseapp.com",
-        databaseURL: "https://tactical-hope-234711.firebaseio.com",
-        projectId: "tactical-hope-234711",
-        storageBucket: "tactical-hope-234711.appspot.com",
-        messagingSenderId: "427684691814",
-      };
-      firebase.initializeApp(config);
-      var db = firebase.firestore();
-    </script>
+<body>
+  <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDfDg0AzavkxcUXMzfMwIYIMl0_VR09uLU",
+      authDomain: "tactical-hope-234711.firebaseapp.com",
+      databaseURL: "https://tactical-hope-234711.firebaseio.com",
+      projectId: "tactical-hope-234711",
+      storageBucket: "tactical-hope-234711.appspot.com",
+      messagingSenderId: "427684691814"
+    };
+    firebase.initializeApp(config);
+    var db = firebase.firestore();
+  </script>
 
-    <!--
+  <!--
     BEFORE RUNNING:
     ---------------
     1. If not already done, enable the Google Sheets API
@@ -102,184 +104,639 @@
     3. For additional information on authentication, see
        https://developers.google.com/sheets/api/quickstart/js#step_2_set_up_the_sample
     -->
-    <script type="text/javascript" src="colorlist.js"></script>
-    <script>
-      var myresult;
+  <script type="text/javascript" src="colorlist.js"></script>
+  <script>
+    var myresult;
 
-      var myvenuedata;
-      var myteacherdata;
-      var mycoursedata;
-      var mysportsdata;
+    var myvenuedata;
+    var myteacherdata;
+    var mycoursedata;
+    var mysportsdata;
 
-      var mydisabledata;
+    var mydisabledata;
 
-      var weekname = ['', '', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    var weekname = ['', '', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-      var myallpossibley = getallpossibley();
+    var myallpossibley = getallpossibley();
 
-      function permu(n, permustring, resultstring, myused, myoutput) {
-        resultstring += permustring[n];
-        myused[n] = 1;
-        if (resultstring.length == permustring.length) {
-          // console.log(resultstring);
-          myoutput.push(resultstring);
+    function permu(n, permustring, resultstring, myused, myoutput) {
+      resultstring += permustring[n];
+      myused[n] = 1;
+      if (resultstring.length == permustring.length) {
+        // console.log(resultstring);
+        myoutput.push(resultstring);
+      }
+      for (var j = 0; j < permustring.length; j++) {
+        if (!myused[j]) {
+          permu(j, '12345', resultstring, myused, myoutput);
         }
-        for (var j = 0; j < permustring.length; j++) {
-          if (!myused[j]) {
-            permu(j, '12345', resultstring, myused, myoutput);
-          }
-        }
-        myused[n] = 0;
-        resultstring.substring(0, resultstring.length - 1);
+      }
+      myused[n] = 0;
+      resultstring.substring(0, resultstring.length - 1);
+    }
+
+    function getallpossibley() {
+      var myresultstring = [];
+      for (var j = 0; j < 5; j++)
+        permu(j, '12345', '', [], myresultstring);
+      // console.log(myresultstring);
+      for (var j = 0; j < myresultstring.length; j++) {
+        myresultstring[j] = myresultstring[j].split('').map(Number);
+      }
+      return myresultstring;
+    }
+
+
+
+    var startcheck = setInterval(function () {
+      if (myvenuedata && myteacherdata && mycoursedata && mysportsdata && mydisabledata) {
+        // document.getElementById('useonlinedatabutton').disabled = false;
+        // document.getElementById('useonlinedatabutton').click();
+        drawvenue();
+        clearInterval(startcheck);
+      } else {
+        // document.getElementById('useonlinedatabutton').disabled = true;
       }
 
-      function getallpossibley() {
-        var myresultstring = [];
-        for (var j = 0; j < 5; j++)
-          permu(j, '12345', '', [], myresultstring);
-        // console.log(myresultstring);
-        for (var j = 0; j < myresultstring.length; j++) {
-          myresultstring[j] = myresultstring[j].split('').map(Number);
+    }, 500);
+
+    document.onkeydown = function (evt) {
+      evt = evt || window.event;
+      if (evt.keyCode == 27) {
+        document.getElementById('popupform').hidden = true;
+        document.getElementById('popupform').hidden = true;
+      } else if (evt.keyCode == 46) {
+        var allbutton = document.getElementById('popupform').getElementsByTagName('button');
+        for (var j = 0; j < allbutton.length; j++) {
+          if (allbutton[j].innerHTML == 'clear')
+            allbutton[j].click();
         }
-        return myresultstring;
       }
+    };
 
 
+    function getdata(x) {
+      var sheetnum;
+      if (x == 'venue') {
+        sheetnum = 1;
+      } else if (x == 'teacher') {
+        sheetnum = 2;
+      } else if (x == 'sports') {
+        sheetnum = 3;
+      } else if (x == 'course') {
+        sheetnum = 4;
+      } else if (x == 'disable') {
+        sheetnum = 5;
+      }
+      var params = {
+        // The ID of the spreadsheet to retrieve data from.
+        spreadsheetId: '1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc', //'1DyjIJd6b5hXbNOGTmdTZTMwVc0GPqrlVkx-YKsoc41g',  // TODO: Update placeholder value.
 
-      var startcheck = setInterval(function () {
-        if (myvenuedata && myteacherdata && mycoursedata && mysportsdata && mydisabledata) {
-          // document.getElementById('useonlinedatabutton').disabled = false;
-          // document.getElementById('useonlinedatabutton').click();
-          drawvenue();
-          clearInterval(startcheck);
-        } else {
-          // document.getElementById('useonlinedatabutton').disabled = true;
-        }
+        // The A1 notation of the values to retrieve.
+        range: 'Sheet' + sheetnum + '!A1:Z1000', //'A1:Z1000',  // TODO: Update placeholder value.
 
-      }, 500);
+        // How values should be represented in the output.
+        // The default render option is ValueRenderOption.FORMATTED_VALUE.
+        valueRenderOption: 'FORMATTED_VALUE', // TODO: Update placeholder value.
 
-      document.onkeydown = function (evt) {
-        evt = evt || window.event;
-        if (evt.keyCode == 27) {
-          document.getElementById('popupform').hidden = true;
-          document.getElementById('popupform').hidden = true;
-        } else if (evt.keyCode == 46) {
-          var allbutton = document.getElementById('popupform').getElementsByTagName('button');
-          for (var j = 0; j < allbutton.length; j++) {
-            if (allbutton[j].innerHTML == 'clear')
-              allbutton[j].click();
-          }
-        }
+        // How dates, times, and durations should be represented in the output.
+        // This is ignored if value_render_option is
+        // FORMATTED_VALUE.
+        // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
+        dateTimeRenderOption: 'SERIAL_NUMBER', // TODO: Update placeholder value.
       };
 
-
-      function getdata(x) {
-        var sheetnum;
+      var request = gapi.client.sheets.spreadsheets.values.get(params);
+      request.then(function (response) {
+        // TODO: Change code below to process the `response` object:
         if (x == 'venue') {
-          sheetnum = 1;
+          myvenuedata = response.result.values;
         } else if (x == 'teacher') {
-          sheetnum = 2;
+          myteacherdata = response.result.values;
         } else if (x == 'sports') {
-          sheetnum = 3;
+          mysportsdata = response.result.values;
         } else if (x == 'course') {
-          sheetnum = 4;
+          mycoursedata = response.result.values;
         } else if (x == 'disable') {
-          sheetnum = 5;
+          mydisabledata = response.result.values;
         }
-        var params = {
-          // The ID of the spreadsheet to retrieve data from.
-          spreadsheetId: '1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc', //'1DyjIJd6b5hXbNOGTmdTZTMwVc0GPqrlVkx-YKsoc41g',  // TODO: Update placeholder value.
+        // console.log(response.result);
+        // myresult = response.result;
+        // document.getElementById("myshowsheet").innerHTML = '';
+        // for (var j=0; j<myresult.values.length; j++){
+        // 	document.getElementById("myshowsheet").innerHTML += myresult.values[j]+'<br>';
+        // }
 
-          // The A1 notation of the values to retrieve.
-          range: 'Sheet' + sheetnum + '!A1:Z1000', //'A1:Z1000',  // TODO: Update placeholder value.
+      }, function (reason) {
+        console.error('error: ' + reason.result.error.message);
+      });
+    }
 
-          // How values should be represented in the output.
-          // The default render option is ValueRenderOption.FORMATTED_VALUE.
-          valueRenderOption: 'FORMATTED_VALUE', // TODO: Update placeholder value.
+    function initClient() {
+      var API_KEY = 'AIzaSyCRCnftLAJ4RmbTHGZi8IN4WEd54GEZjUI'; // TODO: Update placeholder with desired API key.
 
-          // How dates, times, and durations should be represented in the output.
-          // This is ignored if value_render_option is
-          // FORMATTED_VALUE.
-          // The default dateTime render option is [DateTimeRenderOption.SERIAL_NUMBER].
-          dateTimeRenderOption: 'SERIAL_NUMBER', // TODO: Update placeholder value.
-        };
+      var CLIENT_ID =
+        '427684691814-vijfu8j3geopmsi20rjlogfb4drfjfe3.apps.googleusercontent.com'; // TODO: Update placeholder with desired client ID.
 
-        var request = gapi.client.sheets.spreadsheets.values.get(params);
-        request.then(function (response) {
-          // TODO: Change code below to process the `response` object:
-          if (x == 'venue') {
-            myvenuedata = response.result.values;
-          } else if (x == 'teacher') {
-            myteacherdata = response.result.values;
-          } else if (x == 'sports') {
-            mysportsdata = response.result.values;
-          } else if (x == 'course') {
-            mycoursedata = response.result.values;
-          } else if (x == 'disable') {
-            mydisabledata = response.result.values;
+      // TODO: Authorize using one of the following scopes:
+      //   'https://www.googleapis.com/auth/drive'
+      //   'https://www.googleapis.com/auth/drive.file'
+      //   'https://www.googleapis.com/auth/spreadsheets'
+      var SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+
+      gapi.client.init({
+        'apiKey': API_KEY,
+        'clientId': CLIENT_ID,
+        'scope': SCOPE,
+        'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+      }).then(function () {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+        updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      });
+    }
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    function updateSignInStatus(isSignedIn) {
+      if (isSignedIn) {
+        getdata('venue');
+        getdata('teacher');
+        getdata('sports');
+        getdata('course');
+        getdata('disable');
+        document.getElementById('signin-button').hidden = true;
+      } else {
+        document.getElementById('signout-button').hidden = true;
+      }
+
+    }
+
+    function handleSignInClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function handleSignOutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+
+    var weeknameshort = {
+      m: 1,
+      t: 2,
+      w: 3,
+      h: 4,
+      f: 5,
+      s: 6
+    };
+
+    function fillonlinedata() {
+      //init 
+      for (var j in venuejson) {
+        venuejson[j].data = [];
+        for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
+          venuejson[j].data[k] = [];
+          for (var jj = 0; jj <= 6; jj++)
+            venuejson[j].data[k][jj] = {};
+        }
+
+        venuejson[j].disabledata = [];
+        for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
+          venuejson[j].disabledata[k] = [];
+          for (var jj = 0; jj <= 6; jj++)
+            venuejson[j].disabledata[k][jj] = 0;
+        }
+
+
+        venuejson[j].fillct = 0;
+
+        venuejson[j].coursejson = {};
+        const temptable = document.getElementById(j + 'table');
+        for (var jj = 0; jj < temptable.rows.length; jj++) {
+          for (var kk = 0; kk < temptable.rows[jj].cells.length; kk++) {
+            var temptd = temptable.rows[jj].cells[kk];
+            temptd.onmouseover = function () {
+              if (this.innerHTML != '') {
+                var tempdata = this.innerHTML;
+                tempdata = tempdata.split(' ');
+                tempdata = tempdata[tempdata.length - 1];
+                findteacher(tempdata, this.innerHTML.split(' ' + tempdata)[0]);
+
+                // if (this.parentElement.rowIndex > 0 && this.cellIndex > 1) {
+                // this.style.borderWidth = '4px'
+                this.style.borderStyle = 'dotted'
+                // }
+
+                for (let jjj = 0; jjj < temptable.rows.length; jjj++) {
+                  for (let kkk = 0; kkk < temptable.rows[jjj].cells.length; kkk++) {
+                    if (this.innerHTML == temptable.rows[jjj].cells[kkk].innerHTML) {
+                      // temptable.rows[jjj].cells[kkk].style.borderWidth = '4px'
+                      temptable.rows[jjj].cells[kkk].style.borderStyle = 'dotted'
+                    }
+                  }
+                }
+
+              }
+              //coursecode, teachername
+            }
+            temptd.onmouseout = function () {
+              if (this.innerHTML != '') {
+                var tempdata = this.innerHTML;
+                tempdata = tempdata.split(' ');
+                tempdata = tempdata[tempdata.length - 1];
+                cancelfindteacher(tempdata, this.innerHTML.split(' ' + tempdata)[0]);
+
+
+                for (let jjj = 0; jjj < temptable.rows.length; jjj++) {
+                  for (let kkk = 0; kkk < temptable.rows[jjj].cells.length; kkk++) {
+                    // if (temptable.rows[jjj].cells[kkk].style.borderWidth == '4px')
+                    // temptable.rows[jjj].cells[kkk].style.borderWidth = '2px'
+                    temptable.rows[jjj].cells[kkk].style.borderStyle = 'solid'
+                  }
+                }
+
+
+
+              }
+              //coursecode, teachername
+            }
           }
-          // console.log(response.result);
-          // myresult = response.result;
-          // document.getElementById("myshowsheet").innerHTML = '';
-          // for (var j=0; j<myresult.values.length; j++){
-          // 	document.getElementById("myshowsheet").innerHTML += myresult.values[j]+'<br>';
-          // }
-
-        }, function (reason) {
-          console.error('error: ' + reason.result.error.message);
-        });
+        }
       }
 
-      function initClient() {
-        var API_KEY = 'AIzaSyCRCnftLAJ4RmbTHGZi8IN4WEd54GEZjUI'; // TODO: Update placeholder with desired API key.
+      for (var j in teacherjson) {
+        teacherjson[j].fillct = 0;
 
-        var CLIENT_ID =
-          '427684691814-vijfu8j3geopmsi20rjlogfb4drfjfe3.apps.googleusercontent.com'; // TODO: Update placeholder with desired client ID.
+        teacherjson[j].data = [];
+        for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
+          teacherjson[j].data[k] = [];
+          for (var jj = 0; jj <= 6; jj++)
+            teacherjson[j].data[k][jj] = {};
+        }
 
-        // TODO: Authorize using one of the following scopes:
-        //   'https://www.googleapis.com/auth/drive'
-        //   'https://www.googleapis.com/auth/drive.file'
-        //   'https://www.googleapis.com/auth/spreadsheets'
-        var SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+        teacherjson[j].dayct = [];
+        for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
+          teacherjson[j].dayct[k] = 0;
+        }
 
-        gapi.client.init({
-          'apiKey': API_KEY,
-          'clientId': CLIENT_ID,
-          'scope': SCOPE,
-          'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-        }).then(function () {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
-          updateSignInStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        });
+        teacherjson[j].daydata = [];
+        for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
+          teacherjson[j].daydata[k] = {};
+        }
+
+        teacherjson[j].eighthalf = 0;
+
       }
 
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
+
+
+      //---------------------------------------------------------
+
+      var basept = 0;
+      // var fillct = 0;//useless
+      for (var j = 0; j < mycoursedata.length; j++) {
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]] = {};
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].teacher = mycoursedata[j][5];
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].timeslot = {};
+
+        var tempct = 0;
+        for (var jj = 1; jj <= 4; jj++) {
+          if (mycoursedata[j][jj] != '') {
+            tempct++;
+            venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].timeslot[mycoursedata[j][jj]] = jj;
+          }
+        }
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].slotct = tempct;
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].venue = mycoursedata[j][0];
+
+        // console.log(mycoursedata[j][0]+' '+mycoursedata[j][5])
+        if (tempct < 2) {
+          // fillct+=2-tempct;
+          venuejson[mycoursedata[j][0]].fillct += 2 - tempct;
+          teacherjson[mycoursedata[j][5]].fillct += 2 - tempct;
+        }
+
+        document.getElementById(mycoursedata[j][0] + "fillct").innerHTML = venuejson[mycoursedata[j][0]].fillct;
+
+        // if (j==mycoursedata.length-1||mycoursedata[j][0]!=mycoursedata[j+1][0]){
+        //useless now
+        // venuejson[mycoursedata[j-1][0]].fillct = fillct;
+        //    teacherjson[mycoursedata[j-1][5]].fillct = fillct;
+        //document.getElementById(mycoursedata[j-1][0]+"fillct").innerHTML = fillct;
+        // fillct=0;
+        // }
+
+        if (j > 0 && mycoursedata[j - 1][0] != mycoursedata[j][0]) {
+          basept = j;
+        }
+
+        venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].color = colorlist[j - basept];
+
+        var temptable = document.getElementById(mycoursedata[j][0] + 'table');
+        for (var k = 1; k <= 4; k++) {
+          var tempslot = mycoursedata[j][k];
+          if (tempslot) {
+            // console.log(mycoursedata[j][0] + ' ' + mycoursedata[j][6] + ' ' + parseInt(tempslot.substring(1)) + ' ' +
+            // weeknameshort[tempslot[0]])
+            if (!venuejson[mycoursedata[j][0]]) {
+              console.log(mycoursedata[j][0] + ' not found')
+              document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][0] + ' not found'
+              document.getElementById('errormessagebox').hidden = false
+            }
+            if (!teacherjson[mycoursedata[j][5]]) {
+              console.log(mycoursedata[j][5] + ' not found')
+              document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][5] + ' not found'
+              document.getElementById('errormessagebox').hidden = false
+            }
+            venuejson[mycoursedata[j][0]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
+              mycoursedata[j][6]
+            ] = mycoursedata[j][5];
+            teacherjson[mycoursedata[j][5]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
+              mycoursedata[j][6]
+            ] = mycoursedata[j][0];
+
+            teacherjson[mycoursedata[j][5]].dayct[weeknameshort[tempslot[0]]]++;
+            if (teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]]) {
+              teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]]++;
+            } else {
+              teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]] = 1;
+            }
+
+            if (parseInt(tempslot.substring(1)) == 1)
+              teacherjson[mycoursedata[j][5]].eighthalf++;
+
+            // console.log(mycoursedata[j][6],teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]])
+
+            //fill table data
+            //visual
+            var tempfilldata = mycoursedata[j][5] + ' ' + mycoursedata[j][6];
+            var temprowadd = 1;
+            var tempcelladd = 0;
+            while (temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
+                temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd].innerHTML != '' && temprowadd + 1 <=
+              venuejson[mycoursedata[j][0]].slotsize) {
+              temprowadd++;
+              tempcelladd = -2;
+            }
+            // console.log(tempslot+' '+weeknameshort[tempslot[0]]+' '+parseInt(tempslot.substring(1)))
+            var temptd = temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
+              temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd];
+            temptd.innerHTML = tempfilldata;
+            if (mycoursedata[j][7] == '*')
+              temptd.style.backgroundColor = '#DDDDDD';
+            temptd.style.borderColor = colorlist[j - basept];
+            // temptd.style.color = colorlist[j-basept];
+            // temptd.style.backgroundColor = 'black';
+            temptd.style.borderWidth = '2px';
+
+            // temptd.style.backgroundColor = colorlist[j-basept];
+            // temptd.style.color = 'white';
+
+
+            // temptd.style.textShadow = '0px 0px 10px black';
+
+          }
+        }
+      }
+      // console.log(venuejson);
+      // drawteacher();
+
+
+      //handle disabled data
+      for (var j = 0; j < mydisabledata.length; j++) {
+        var mytable = document.getElementById(mydisabledata[j][0] + 'table');
+        var myslotsize = venuejson[mydisabledata[j][0]].slotsize;
+        for (var k = 1; k < mydisabledata[j].length; k++) {
+          var mydata = mydisabledata[j][k].split('-')[0];
+          var myn = mydisabledata[j][k].split('-')[1]
+
+          if (mydata != '') {
+            var mycell = weeknameshort[mydata[0]];
+            if (mydata.length > 1) {
+              var myrow = parseInt(mydata.substring(1));
+              // console.log(mydata,myn, mycell,myrow)
+              if (myn) {
+                mytable.rows[jsonxtotablex(mydisabledata[j][0], myrow, myn)].cells[jsonytotabley(mydisabledata[j][0],
+                  myrow, mycell, myn)].style.backgroundColor = 'grey';
+                //specific slot
+                venuejson[mydisabledata[j][0]].disabledata[myrow][mycell] = 1;
+              } else {
+                for (var jj = 1; jj <= myslotsize; jj++) {
+                  mytable.rows[jsonxtotablex(mydisabledata[j][0], myrow, jj)].cells[jsonytotabley(mydisabledata[j][0],
+                    myrow, mycell, jj)].style.backgroundColor = 'grey';
+                }
+                venuejson[mydisabledata[j][0]].disabledata[myrow][mycell] = myslotsize;
+                //spectific time with all time slot
+              }
+            } else {
+              for (var kk = 1; kk <= 10; kk++) {
+                for (var jj = 1; jj <= myslotsize; jj++) {
+                  mytable.rows[jsonxtotablex(mydisabledata[j][0], kk, jj)].cells[jsonytotabley(mydisabledata[j][0], kk,
+                    mycell, jj)].style.backgroundColor = 'grey';
+                }
+                venuejson[mydisabledata[j][0]].disabledata[kk][mycell] = myslotsize;
+              }
+
+              //whole column
+            }
+
+
+          }
+        }
       }
 
-      function updateSignInStatus(isSignedIn) {
-        if (isSignedIn) {
-          getdata('venue');
-          getdata('teacher');
-          getdata('sports');
-          getdata('course');
-          getdata('disable');
-          document.getElementById('signin-button').hidden = true;
-        } else {
-          document.getElementById('signout-button').hidden = true;
+      for (var j = 0; j < mysportsdata.length; j++) {
+        // var tempdata = mysportsdata[j][0].split(' ');
+        // sportsjson[tempdata[0]] = tempdata[1];
+        sportsjson[mysportsdata[j][0]] = mysportsdata[j][1];
+      }
+
+    }
+
+    var teacherjson = {};
+    var venuejson = {};
+    var sportsjson = {};
+
+    function drawvenue() {
+      document.getElementById('myshowsheet').innerHTML = '';
+
+      //handle venue data
+      for (var j = 0; j < myvenuedata.length; j++) {
+        venuejson[myvenuedata[j][0]] = {};
+        venuejson[myvenuedata[j][0]].slotsize = parseInt(myvenuedata[j][1]);
+
+        //document.getElementsByTagName('body')[0].innerHTML
+        document.getElementById('myshowsheet').innerHTML += '<h1>' + myvenuedata[j][0] + '</h1>';
+        document.getElementById('myshowsheet').innerHTML += '<span style="color: red;" id="' + myvenuedata[j][0] +
+          'fillct">' + '</span> more to fill';
+        var tempnewtable = tableCreate(document.getElementById('myshowsheet'), myvenuedata[j][0] + 'table', 10, 6,
+          parseInt(myvenuedata[j][1]));
+        //id = venuenametable , 9 lessons, 6 days per week, how many course each time slot
+        // console.log(tempnewtable);
+        document.getElementById('myshowsheet').innerHTML += '<br><button onclick="generate(' + "'" + myvenuedata[j][0] +
+          "'" + ')">Generate</button>' +
+          '<div id="' + myvenuedata[j][0] + 'genprogress"></div>';
+      }
+
+      for (var j in venuejson) {
+        var temptable = document.getElementById(j + 'table');
+        for (var jj = 0; jj < temptable.rows.length; jj++) {
+          for (var kk = 0; kk < temptable.rows[jj].cells.length; kk++) {
+            temptable.rows[jj].cells[kk].onclick = function () {
+              choosecourse(this);
+            }
+          }
+        }
+      }
+
+      // document.getElementById('useonlinedatabutton').hidden = true;
+
+      //----------------------------------------------------------
+      // handle teacher data
+      teacherjson = {};
+      for (var j = 0; j < myteacherdata.length; j++) {
+        teacherjson[myteacherdata[j][0]] = {};
+        teacherjson[myteacherdata[j][0]].data = {};
+        teacherjson[myteacherdata[j][0]].realname = myteacherdata[j][1];
+      }
+
+      fillonlinedata();
+    }
+
+    function updateteachertable() {
+      mynewwindow.document.body.innerHTML = '';
+      for (var j in teacherjson) {
+        mynewwindow.document.body.innerHTML += '<h1>' + j + '</h1>';
+        tableCreate(mynewwindow.document.body, j + 'table', 10, 6, 1);
+        //fill teacher data
+        for (var jj = 1; jj < teacherjson[j].data.length; jj++) {
+          for (var kk = 1; kk < teacherjson[j].data[jj].length; kk++) {
+            var tempdata = teacherjson[j].data[jj][kk];
+            for (jjj in tempdata) {
+              mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1].innerHTML = tempdata[jjj] + ' ' +
+                jjj;
+            }
+          }
+
         }
 
       }
+    }
 
-      function handleSignInClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
+    var mynewwindow;
+
+    function drawteacher() {
+      if (mynewwindow)
+        mynewwindow.close();
+      // if (!mynewwindow)
+      mynewwindow = window.open('', '', 'width=500,height=1000');
+      updateteachertable();
+    }
+
+
+
+    function tablextojsonx(myvenue, x) {
+      if (x < 0)
+        return -1;
+      return parseInt((x - 1) / venuejson[myvenue].slotsize) + 1;
+    }
+
+    function tableytojsony(myvenue, x, y) {
+      if ((x - 1) % venuejson[myvenue].slotsize == 0) {
+        if (y < 2)
+          return -1;
+        return y - 1;
+      } else {
+        if (y < 0)
+          return -1;
+        return y + 1;
       }
+    }
 
-      function handleSignOutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
+    function jsonxtotablex(myvenue, x, n) {
+      var myslotsize = venuejson[myvenue].slotsize;
+      return (x - 1) * myslotsize + n;
+    }
+
+    function jsonytotabley(myvenue, x, y, n) {
+      var myslotsize = venuejson[myvenue].slotsize;
+      if (((x - 1) * myslotsize + n - 1) % myslotsize == 0) {
+        return y + 1;
+      } else {
+        return y - 1;
       }
+    }
 
-      var weeknameshort = {
+    function outputjsondata() {
+      var outputdata = [];
+      var numtoweekname = ['', 'm', 't', 'w', 'h', 'f', 's'];
+      var temptime
+      for (var j in venuejson) {
+        var mycourselist = venuejson[j].coursejson;
+        var mycoursedata = venuejson[j].data;
+
+        for (var jj = 1; jj <= 10; jj++) {
+          for (var kk = 1; kk <= 5; kk++) {
+            for (var jjj in mycoursedata[jj][kk]) {
+              var mycourse = jjj;
+              var myvenue = j;
+              for (var n in venuejson[j].coursejson[mycourse].timeslot)
+                if (venuejson[j].coursejson[mycourse].timeslot[n] == 'x')
+                  delete venuejson[j].coursejson[mycourse].timeslot[n];
+            }
+          }
+        }
+
+        for (var jj = 1; jj <= 10; jj++) {
+          for (var kk = 1; kk <= 5; kk++) {
+            for (var jjj in mycoursedata[jj][kk]) {
+              var mycourse = jjj;
+              var myvenue = j;
+              if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj])
+                venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj] = 'x';
+            }
+          }
+        }
+
+        for (var k in mycourselist) {
+          var mycourse = k;
+          var myvenue = j;
+          var myteacher = mycourselist[k].teacher;
+          var tempct = 0;
+          var nowpos = outputdata.length;
+          outputdata[nowpos] = [];
+          outputdata[nowpos][0] = myvenue;
+          // outputdata[nowpos][7] = myteacher;
+          // outputdata[nowpos][8] = mycourse;
+          outputdata[nowpos][5] = myteacher;
+          outputdata[nowpos][6] = mycourse;
+          for (var jj in mycourselist[k].timeslot) {
+            tempct++;
+            outputdata[nowpos][tempct] = jj;
+          }
+        }
+      }
+      return outputdata;
+    }
+
+
+    function totimeslotname(x, y) {
+      var xoutput = {
+        m: 'Mo',
+        t: 'Tu',
+        w: 'We',
+        h: 'Th',
+        f: 'Fr',
+        s: 'Sa'
+      };
+      var youtput = ['', '08:30-09:15', '09:30-10:15', '10:30-11:15', '11:30-12:15', '12:30-13:15', '13:30-14:15',
+        '14:30-15:15', '15:30-16:15', '16:30-17:15', '17:30-18:15'
+      ];
+      return xoutput[x] + ' ' + youtput[y];
+    }
+
+    function comparetimeslot(x1, y1, x2, y2) {
+      var xoutput = {
         m: 1,
         t: 2,
         w: 3,
@@ -287,1460 +744,983 @@
         f: 5,
         s: 6
       };
+      // console.log(xoutput[x1],y1,xoutput[x2],y2,(xoutput[x1]>xoutput[x2]||xoutput[x1]==xoutput[x2]&&y1>y2));
+      if (xoutput[x1] > xoutput[x2] || xoutput[x1] == xoutput[x2] && y1 > y2) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
 
-      function fillonlinedata() {
-        //init
-        for (var j in venuejson) {
-          venuejson[j].data = [];
-          for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
-            venuejson[j].data[k] = [];
-            for (var jj = 0; jj <= 6; jj++)
-              venuejson[j].data[k][jj] = {};
-          }
+    function outputjsondata2() {
+      var outputdata = [];
+      var numtoweekname = ['', 'm', 't', 'w', 'h', 'f', 's'];
+      var temptime
+      for (var j in venuejson) {
+        var mycourselist = venuejson[j].coursejson;
+        var mycoursedata = venuejson[j].data;
 
-          venuejson[j].disabledata = [];
-          for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
-            venuejson[j].disabledata[k] = [];
-            for (var jj = 0; jj <= 6; jj++)
-              venuejson[j].disabledata[k][jj] = 0;
-          }
-
-
-          venuejson[j].fillct = 0;
-
-          venuejson[j].coursejson = {};
-          const temptable = document.getElementById(j + 'table');
-          for (var jj = 0; jj < temptable.rows.length; jj++) {
-            for (var kk = 0; kk < temptable.rows[jj].cells.length; kk++) {
-              var temptd = temptable.rows[jj].cells[kk];
-              temptd.onmouseover = function () {
-                if (this.innerHTML != '') {
-                  var tempdata = this.innerHTML;
-                  tempdata = tempdata.split(' ');
-                  tempdata = tempdata[tempdata.length - 1];
-                  findteacher(tempdata, this.innerHTML.split(' ' + tempdata)[0]);
-
-                  // if (this.parentElement.rowIndex > 0 && this.cellIndex > 1) {
-                  // this.style.borderWidth = '4px'
-                  this.style.borderStyle = 'dotted'
-                  // }
-
-                  for (let jjj = 0; jjj < temptable.rows.length; jjj++) {
-                    for (let kkk = 0; kkk < temptable.rows[jjj].cells.length; kkk++) {
-                      if (this.innerHTML == temptable.rows[jjj].cells[kkk].innerHTML) {
-                        // temptable.rows[jjj].cells[kkk].style.borderWidth = '4px'
-                        temptable.rows[jjj].cells[kkk].style.borderStyle = 'dotted'
-                      }
-                    }
-                  }
-
-                }
-                //coursecode, teachername
-              }
-              temptd.onmouseout = function () {
-                if (this.innerHTML != '') {
-                  var tempdata = this.innerHTML;
-                  tempdata = tempdata.split(' ');
-                  tempdata = tempdata[tempdata.length - 1];
-                  cancelfindteacher(tempdata, this.innerHTML.split(' ' + tempdata)[0]);
-
-
-                  for (let jjj = 0; jjj < temptable.rows.length; jjj++) {
-                    for (let kkk = 0; kkk < temptable.rows[jjj].cells.length; kkk++) {
-                      // if (temptable.rows[jjj].cells[kkk].style.borderWidth == '4px')
-                      // temptable.rows[jjj].cells[kkk].style.borderWidth = '2px'
-                      temptable.rows[jjj].cells[kkk].style.borderStyle = 'solid'
-                    }
-                  }
-
-
-
-                }
-                //coursecode, teachername
-              }
+        for (var jj = 1; jj <= 10; jj++) {
+          for (var kk = 1; kk <= 5; kk++) {
+            for (var jjj in mycoursedata[jj][kk]) {
+              var mycourse = jjj;
+              var myvenue = j;
+              for (var n in venuejson[j].coursejson[mycourse].timeslot)
+                if (venuejson[j].coursejson[mycourse].timeslot[n] == 'x')
+                  delete venuejson[j].coursejson[mycourse].timeslot[n];
             }
           }
         }
 
-        for (var j in teacherjson) {
-          teacherjson[j].fillct = 0;
-
-          teacherjson[j].data = [];
-          for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
-            teacherjson[j].data[k] = [];
-            for (var jj = 0; jj <= 6; jj++)
-              teacherjson[j].data[k][jj] = {};
+        for (var jj = 1; jj <= 10; jj++) {
+          for (var kk = 1; kk <= 5; kk++) {
+            for (var jjj in mycoursedata[jj][kk]) {
+              var mycourse = jjj;
+              var myvenue = j;
+              if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj])
+                venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj] = 'x';
+            }
           }
-
-          teacherjson[j].dayct = [];
-          for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
-            teacherjson[j].dayct[k] = 0;
-          }
-
-          teacherjson[j].daydata = [];
-          for (var k = 0; k <= 10; k++) { //*venuejson[j].slotsize; k++){
-            teacherjson[j].daydata[k] = {};
-          }
-
-          teacherjson[j].eighthalf = 0;
-
         }
 
-
-
-        //---------------------------------------------------------
-
-        var basept = 0;
-        // var fillct = 0;//useless
-        for (var j = 0; j < mycoursedata.length; j++) {
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]] = {};
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].teacher = mycoursedata[j][5];
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].timeslot = {};
-
+        for (var k in mycourselist) {
+          var mycourse = k;
+          var myvenue = j;
+          var myteacher = mycourselist[k].teacher;
           var tempct = 0;
-          for (var jj = 1; jj <= 4; jj++) {
-            if (mycoursedata[j][jj] != '') {
-              tempct++;
-              venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].timeslot[mycoursedata[j][jj]] = jj;
-            }
-          }
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].slotct = tempct;
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].venue = mycoursedata[j][0];
+          var nowpos = outputdata.length;
+          outputdata[nowpos] = [];
+          outputdata[nowpos][12] = myvenue;
+          // outputdata[nowpos][7] = myteacher;
+          // outputdata[nowpos][8] = mycourse;
+          outputdata[nowpos][1] = sportsjson[mycourse];
+          outputdata[nowpos][2] = myteacher;
+          // outputdata[nowpos][2] = teacherjson[myteacher].realname;
+          outputdata[nowpos][0] = mycourse;
 
-          // console.log(mycoursedata[j][0]+' '+mycoursedata[j][5])
-          if (tempct < 2) {
-            // fillct+=2-tempct;
-            venuejson[mycoursedata[j][0]].fillct += 2 - tempct;
-            teacherjson[mycoursedata[j][5]].fillct += 2 - tempct;
-          }
-
-          document.getElementById(mycoursedata[j][0] + "fillct").innerHTML = venuejson[mycoursedata[j][0]].fillct;
-
-          // if (j==mycoursedata.length-1||mycoursedata[j][0]!=mycoursedata[j+1][0]){
-          //useless now
-          // venuejson[mycoursedata[j-1][0]].fillct = fillct;
-          //    teacherjson[mycoursedata[j-1][5]].fillct = fillct;
-          //document.getElementById(mycoursedata[j-1][0]+"fillct").innerHTML = fillct;
-          // fillct=0;
-          // }
-
-          if (j > 0 && mycoursedata[j - 1][0] != mycoursedata[j][0]) {
-            basept = j;
+          for (var jj in mycourselist[k].timeslot) {
+            outputdata[nowpos][tempct * 2 + 4] = jj;
+            outputdata[nowpos][tempct * 2 + 5] = totimeslotname(jj[0], parseInt(jj.substring(1)));
+            tempct++;
           }
 
-          venuejson[mycoursedata[j][0]].coursejson[mycoursedata[j][6]].color = colorlist[j - basept];
-
-          var temptable = document.getElementById(mycoursedata[j][0] + 'table');
-          for (var k = 1; k <= 4; k++) {
-            var tempslot = mycoursedata[j][k];
-            if (tempslot) {
-              // console.log(mycoursedata[j][0] + ' ' + mycoursedata[j][6] + ' ' + parseInt(tempslot.substring(1)) + ' ' +
-              // weeknameshort[tempslot[0]])
-              if (!venuejson[mycoursedata[j][0]]) {
-                console.log(mycoursedata[j][0] + ' not found')
-                document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][0] + ' not found'
-                document.getElementById('errormessagebox').hidden = false
-              }
-              if (!teacherjson[mycoursedata[j][5]]) {
-                console.log(mycoursedata[j][5] + ' not found')
-                document.getElementById('errormessagebox').innerHTML = "ERROR: " + mycoursedata[j][5] + ' not found'
-                document.getElementById('errormessagebox').hidden = false
-              }
-              venuejson[mycoursedata[j][0]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
-                mycoursedata[j][6]
-              ] = mycoursedata[j][5];
-              teacherjson[mycoursedata[j][5]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
-                mycoursedata[j][6]
-              ] = mycoursedata[j][0];
-
-              teacherjson[mycoursedata[j][5]].dayct[weeknameshort[tempslot[0]]]++;
-              if (teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]]) {
-                teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]]++;
-              } else {
-                teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]] = 1;
-              }
-
-              if (parseInt(tempslot.substring(1)) == 1)
-                teacherjson[mycoursedata[j][5]].eighthalf++;
-
-              // console.log(mycoursedata[j][6],teacherjson[mycoursedata[j][5]].daydata[weeknameshort[tempslot[0]]][mycoursedata[j][6]])
-
-              //fill table data
-              //visual
-              var tempfilldata = mycoursedata[j][5] + ' ' + mycoursedata[j][6];
-              var temprowadd = 1;
-              var tempcelladd = 0;
-              while (temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
-                  temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd].innerHTML != '' && temprowadd + 1 <=
-                venuejson[mycoursedata[j][0]].slotsize) {
-                temprowadd++;
-                tempcelladd = -2;
-              }
-              // console.log(tempslot+' '+weeknameshort[tempslot[0]]+' '+parseInt(tempslot.substring(1)))
-              var temptd = temptable.rows[(parseInt(tempslot.substring(1)) - 1) * venuejson[mycoursedata[j][0]].slotsize +
-                temprowadd].cells[weeknameshort[tempslot[0]] + 1 + tempcelladd];
-              temptd.innerHTML = tempfilldata;
-              if (mycoursedata[j][7] == '*')
-                temptd.style.backgroundColor = '#DDDDDD';
-              temptd.style.borderColor = colorlist[j - basept];
-              // temptd.style.color = colorlist[j-basept];
-              // temptd.style.backgroundColor = 'black';
-              temptd.style.borderWidth = '2px';
-
-              // temptd.style.backgroundColor = colorlist[j-basept];
-              // temptd.style.color = 'white';
-
-
-              // temptd.style.textShadow = '0px 0px 10px black';
-
-            }
-          }
-        }
-        // console.log(venuejson);
-        // drawteacher();
-
-
-        //handle disabled data
-        for (var j = 0; j < mydisabledata.length; j++) {
-          var mytable = document.getElementById(mydisabledata[j][0] + 'table');
-          var myslotsize = venuejson[mydisabledata[j][0]].slotsize;
-          for (var k = 1; k < mydisabledata[j].length; k++) {
-            var mydata = mydisabledata[j][k].split('-')[0];
-            var myn = mydisabledata[j][k].split('-')[1]
-
-            if (mydata != '') {
-              var mycell = weeknameshort[mydata[0]];
-              if (mydata.length > 1) {
-                var myrow = parseInt(mydata.substring(1));
-                // console.log(mydata,myn, mycell,myrow)
-                if (myn) {
-                  mytable.rows[jsonxtotablex(mydisabledata[j][0], myrow, myn)].cells[jsonytotabley(mydisabledata[j][0],
-                    myrow, mycell, myn)].style.backgroundColor = 'grey';
-                  //specific slot
-                  venuejson[mydisabledata[j][0]].disabledata[myrow][mycell] = 1;
-                } else {
-                  for (var jj = 1; jj <= myslotsize; jj++) {
-                    mytable.rows[jsonxtotablex(mydisabledata[j][0], myrow, jj)].cells[jsonytotabley(mydisabledata[j][0],
-                      myrow, mycell, jj)].style.backgroundColor = 'grey';
-                  }
-                  venuejson[mydisabledata[j][0]].disabledata[myrow][mycell] = myslotsize;
-                  //spectific time with all time slot
+          for (var jj = 0; jj < 4 - 1; jj++) {
+            for (var kk = jj + 1; kk < 4; kk++) {
+              if (outputdata[nowpos][jj * 2 + 4] && outputdata[nowpos][kk * 2 + 4]) {
+                var temp1 = outputdata[nowpos][jj * 2 + 4];
+                var temp2 = outputdata[nowpos][kk * 2 + 4];
+                // console.log(jj*2+4,temp2, kk*2+4, temp1);
+                // console.log(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1)),comparetimeslot(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1))));
+                if (comparetimeslot(temp1[0], parseInt(temp1.substring(1)), temp2[0], parseInt(temp2.substring(1))) ==
+                  1) {
+                  var temp = outputdata[nowpos][jj * 2 + 4];
+                  outputdata[nowpos][jj * 2 + 4] = outputdata[nowpos][kk * 2 + 4];
+                  outputdata[nowpos][kk * 2 + 4] = temp;
+                  var temp = outputdata[nowpos][jj * 2 + 5];
+                  outputdata[nowpos][jj * 2 + 5] = outputdata[nowpos][kk * 2 + 5];
+                  outputdata[nowpos][kk * 2 + 5] = temp;
                 }
-              } else {
-                for (var kk = 1; kk <= 10; kk++) {
-                  for (var jj = 1; jj <= myslotsize; jj++) {
-                    mytable.rows[jsonxtotablex(mydisabledata[j][0], kk, jj)].cells[jsonytotabley(mydisabledata[j][0], kk,
-                      mycell, jj)].style.backgroundColor = 'grey';
-                  }
-                  venuejson[mydisabledata[j][0]].disabledata[kk][mycell] = myslotsize;
-                }
-
-                //whole column
-              }
-
-
-            }
-          }
-        }
-
-        for (var j = 0; j < mysportsdata.length; j++) {
-          // var tempdata = mysportsdata[j][0].split(' ');
-          // sportsjson[tempdata[0]] = tempdata[1];
-          sportsjson[mysportsdata[j][0]] = mysportsdata[j][1];
-        }
-
-      }
-
-      var teacherjson = {};
-      var venuejson = {};
-      var sportsjson = {};
-
-      function drawvenue() {
-        document.getElementById('myshowsheet').innerHTML = '';
-
-        //handle venue data
-        for (var j = 0; j < myvenuedata.length; j++) {
-          venuejson[myvenuedata[j][0]] = {};
-          venuejson[myvenuedata[j][0]].slotsize = parseInt(myvenuedata[j][1]);
-
-          //document.getElementsByTagName('body')[0].innerHTML
-          document.getElementById('myshowsheet').innerHTML += '<h1>' + myvenuedata[j][0] + '</h1>';
-          document.getElementById('myshowsheet').innerHTML += '<span style="color: red;" id="' + myvenuedata[j][0] +
-            'fillct">' + '</span> more to fill';
-          var tempnewtable = tableCreate(document.getElementById('myshowsheet'), myvenuedata[j][0] + 'table', 10, 6,
-            parseInt(myvenuedata[j][1]));
-          //id = venuenametable , 9 lessons, 6 days per week, how many course each time slot
-          // console.log(tempnewtable);
-          document.getElementById('myshowsheet').innerHTML += '<br><button onclick="generate(' + "'" + myvenuedata[j][0] +
-            "'" + ')">Generate</button>' +
-            '<div id="' + myvenuedata[j][0] + 'genprogress"></div>';
-        }
-
-        for (var j in venuejson) {
-          var temptable = document.getElementById(j + 'table');
-          for (var jj = 0; jj < temptable.rows.length; jj++) {
-            for (var kk = 0; kk < temptable.rows[jj].cells.length; kk++) {
-              temptable.rows[jj].cells[kk].onclick = function () {
-                choosecourse(this);
               }
             }
           }
-        }
 
-        // document.getElementById('useonlinedatabutton').hidden = true;
-
-        //----------------------------------------------------------
-        // handle teacher data
-        teacherjson = {};
-        for (var j = 0; j < myteacherdata.length; j++) {
-          teacherjson[myteacherdata[j][0]] = {};
-          teacherjson[myteacherdata[j][0]].data = {};
-          teacherjson[myteacherdata[j][0]].realname = myteacherdata[j][1];
-        }
-
-        fillonlinedata();
-      }
-
-      function updateteachertable() {
-        mynewwindow.document.body.innerHTML = '';
-        for (var j in teacherjson) {
-          mynewwindow.document.body.innerHTML += '<h1>' + j + '</h1>';
-          tableCreate(mynewwindow.document.body, j + 'table', 10, 6, 1);
-          //fill teacher data
-          for (var jj = 1; jj < teacherjson[j].data.length; jj++) {
-            for (var kk = 1; kk < teacherjson[j].data[jj].length; kk++) {
-              var tempdata = teacherjson[j].data[jj][kk];
-              for (jjj in tempdata) {
-                mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk + 1].innerHTML = tempdata[jjj] + ' ' +
-                  jjj;
-              }
-            }
-
-          }
+          console.log(outputdata[nowpos])
 
         }
       }
+      return outputdata;
+    }
 
-      var mynewwindow;
+    function savedata() {
+      var venuestring = JSON.stringify(venuejson);
+      var teacherstring = JSON.stringify(teacherjson);
+      var savename = prompt('NAME OF THIS RECORD');
+      // document.getElementById("savename").value = savename;
+      // document.getElementById("savevenuejson").value = venuestring;
+      // document.getElementById("saveteacherjson").value = teacherstring;
+      // document.getElementById("saveform").submit();
+      db.collection("savedata").doc(savename).set({
+          venuejson: venuestring,
+          teacherjson: teacherstring
+        })
+        .then(function () {
+          document.getElementById('popupform').hidden = true;
+          console.log("Document successfully written!");
+          alert('ok');
+        })
+        .catch(function (error) {
+          console.error("Error writing document: ", error);
+          alert('error');
+        });
+    }
 
-      function drawteacher() {
-        if (mynewwindow)
-          mynewwindow.close();
-        // if (!mynewwindow)
-        mynewwindow = window.open('', '', 'width=500,height=1000');
+    myallsaveddata = {};
+
+    function getsaveddata() {
+      document.getElementById('popupform').innerHTML = '';
+      db.collection("savedata").get().then(function (querySnapshot) {
+        myallsaveddata = {};
+        querySnapshot.forEach(function (doc) {
+          // console.log(doc.id, " => ", doc.data());
+          myallsaveddata[doc.id] = doc.data();
+          document.getElementById('popupform').innerHTML += '<button onclick="choosesavedata(this)">' + doc.id;
+        });
+        document.getElementById('popupform').innerHTML +=
+          '</button><hr><button onclick="formaction(this)" style="border-color:black">cancel</button>'
+      });
+    }
+
+    function choosesavedata(x) {
+      var myid = x.innerHTML;
+      venuejson = JSON.parse(myallsaveddata[myid].venuejson);
+      teacherjson = JSON.parse(myallsaveddata[myid].teacherjson);
+      for (var j in venuejson)
+        updatevisualdata(j);
+      if (mynewwindow)
         updateteachertable();
-      }
+      alert('ok');
+      document.getElementById('popupform').hidden = true;
+    }
 
+    function loadsaveddata() {
+      document.getElementById('popupform').hidden = false;
+      getsaveddata();
+    }
 
-
-      function tablextojsonx(myvenue, x) {
-        if (x < 0)
-          return -1;
-        return parseInt((x - 1) / venuejson[myvenue].slotsize) + 1;
-      }
-
-      function tableytojsony(myvenue, x, y) {
-        if ((x - 1) % venuejson[myvenue].slotsize == 0) {
-          if (y < 2)
-            return -1;
-          return y - 1;
-        } else {
-          if (y < 0)
-            return -1;
-          return y + 1;
-        }
-      }
-
-      function jsonxtotablex(myvenue, x, n) {
-        var myslotsize = venuejson[myvenue].slotsize;
-        return (x - 1) * myslotsize + n;
-      }
-
-      function jsonytotabley(myvenue, x, y, n) {
-        var myslotsize = venuejson[myvenue].slotsize;
-        if (((x - 1) * myslotsize + n - 1) % myslotsize == 0) {
-          return y + 1;
-        } else {
-          return y - 1;
-        }
-      }
-
-      function outputjsondata() {
-        var outputdata = [];
-        var numtoweekname = ['', 'm', 't', 'w', 'h', 'f', 's'];
-        var temptime
-        for (var j in venuejson) {
-          var mycourselist = venuejson[j].coursejson;
-          var mycoursedata = venuejson[j].data;
-
-          for (var jj = 1; jj <= 10; jj++) {
-            for (var kk = 1; kk <= 5; kk++) {
-              for (var jjj in mycoursedata[jj][kk]) {
-                var mycourse = jjj;
-                var myvenue = j;
-                for (var n in venuejson[j].coursejson[mycourse].timeslot)
-                  if (venuejson[j].coursejson[mycourse].timeslot[n] == 'x')
-                    delete venuejson[j].coursejson[mycourse].timeslot[n];
-              }
-            }
-          }
-
-          for (var jj = 1; jj <= 10; jj++) {
-            for (var kk = 1; kk <= 5; kk++) {
-              for (var jjj in mycoursedata[jj][kk]) {
-                var mycourse = jjj;
-                var myvenue = j;
-                if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj])
-                  venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj] = 'x';
-              }
-            }
-          }
-
-          for (var k in mycourselist) {
-            var mycourse = k;
-            var myvenue = j;
-            var myteacher = mycourselist[k].teacher;
-            var tempct = 0;
-            var nowpos = outputdata.length;
-            outputdata[nowpos] = [];
-            outputdata[nowpos][0] = myvenue;
-            // outputdata[nowpos][7] = myteacher;
-            // outputdata[nowpos][8] = mycourse;
-            outputdata[nowpos][5] = myteacher;
-            outputdata[nowpos][6] = mycourse;
-            for (var jj in mycourselist[k].timeslot) {
-              tempct++;
-              outputdata[nowpos][tempct] = jj;
-            }
-          }
-        }
-        return outputdata;
-      }
-
-
-      function totimeslotname(x, y) {
-        var xoutput = {
-          m: 'Mo',
-          t: 'Tu',
-          w: 'We',
-          h: 'Th',
-          f: 'Fr',
-          s: 'Sa'
-        };
-        var youtput = ['', '08:30-09:15', '09:30-10:15', '10:30-11:15', '11:30-12:15', '12:30-13:15', '13:30-14:15',
-          '14:30-15:15', '15:30-16:15', '16:30-17:15', '17:30-18:15'
-        ];
-        return xoutput[x] + ' ' + youtput[y];
-      }
-
-      function comparetimeslot(x1, y1, x2, y2) {
-        var xoutput = {
-          m: 1,
-          t: 2,
-          w: 3,
-          h: 4,
-          f: 5,
-          s: 6
-        };
-        // console.log(xoutput[x1],y1,xoutput[x2],y2,(xoutput[x1]>xoutput[x2]||xoutput[x1]==xoutput[x2]&&y1>y2));
-        if (xoutput[x1] > xoutput[x2] || xoutput[x1] == xoutput[x2] && y1 > y2) {
-          return 1;
-        } else {
-          return -1;
-        }
-      }
-
-      function outputjsondata2() {
-        var outputdata = [];
-        var numtoweekname = ['', 'm', 't', 'w', 'h', 'f', 's'];
-        var temptime
-        for (var j in venuejson) {
-          var mycourselist = venuejson[j].coursejson;
-          var mycoursedata = venuejson[j].data;
-
-          for (var jj = 1; jj <= 10; jj++) {
-            for (var kk = 1; kk <= 5; kk++) {
-              for (var jjj in mycoursedata[jj][kk]) {
-                var mycourse = jjj;
-                var myvenue = j;
-                for (var n in venuejson[j].coursejson[mycourse].timeslot)
-                  if (venuejson[j].coursejson[mycourse].timeslot[n] == 'x')
-                    delete venuejson[j].coursejson[mycourse].timeslot[n];
-              }
-            }
-          }
-
-          for (var jj = 1; jj <= 10; jj++) {
-            for (var kk = 1; kk <= 5; kk++) {
-              for (var jjj in mycoursedata[jj][kk]) {
-                var mycourse = jjj;
-                var myvenue = j;
-                if (!venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj])
-                  venuejson[j].coursejson[mycourse].timeslot[numtoweekname[kk] + jj] = 'x';
-              }
-            }
-          }
-
-          for (var k in mycourselist) {
-            var mycourse = k;
-            var myvenue = j;
-            var myteacher = mycourselist[k].teacher;
-            var tempct = 0;
-            var nowpos = outputdata.length;
-            outputdata[nowpos] = [];
-            outputdata[nowpos][12] = myvenue;
-            // outputdata[nowpos][7] = myteacher;
-            // outputdata[nowpos][8] = mycourse;
-            outputdata[nowpos][1] = sportsjson[mycourse];
-            outputdata[nowpos][2] = myteacher;
-            // outputdata[nowpos][2] = teacherjson[myteacher].realname;
-            outputdata[nowpos][0] = mycourse;
-
-            for (var jj in mycourselist[k].timeslot) {
-              outputdata[nowpos][tempct * 2 + 4] = jj;
-              outputdata[nowpos][tempct * 2 + 5] = totimeslotname(jj[0], parseInt(jj.substring(1)));
-              tempct++;
-            }
-
-            for (var jj = 0; jj < 4 - 1; jj++) {
-              for (var kk = jj + 1; kk < 4; kk++) {
-                if (outputdata[nowpos][jj * 2 + 4] && outputdata[nowpos][kk * 2 + 4]) {
-                  var temp1 = outputdata[nowpos][jj * 2 + 4];
-                  var temp2 = outputdata[nowpos][kk * 2 + 4];
-                  // console.log(jj*2+4,temp2, kk*2+4, temp1);
-                  // console.log(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1)),comparetimeslot(temp1[0],parseInt(temp1.substring(1)),temp2[0],parseInt(temp2.substring(1))));
-                  if (comparetimeslot(temp1[0], parseInt(temp1.substring(1)), temp2[0], parseInt(temp2.substring(1))) ==
-                    1) {
-                    var temp = outputdata[nowpos][jj * 2 + 4];
-                    outputdata[nowpos][jj * 2 + 4] = outputdata[nowpos][kk * 2 + 4];
-                    outputdata[nowpos][kk * 2 + 4] = temp;
-                    var temp = outputdata[nowpos][jj * 2 + 5];
-                    outputdata[nowpos][jj * 2 + 5] = outputdata[nowpos][kk * 2 + 5];
-                    outputdata[nowpos][kk * 2 + 5] = temp;
-                  }
-                }
-              }
-            }
-
-            console.log(outputdata[nowpos])
-
-          }
-        }
-        return outputdata;
-      }
-
-      function savedata() {
-        var venuestring = JSON.stringify(venuejson);
-        var teacherstring = JSON.stringify(teacherjson);
-        var savename = prompt('NAME OF THIS RECORD');
-        // document.getElementById("savename").value = savename;
-        // document.getElementById("savevenuejson").value = venuestring;
-        // document.getElementById("saveteacherjson").value = teacherstring;
-        // document.getElementById("saveform").submit();
-        db.collection("savedata").doc(savename).set({
-            venuejson: venuestring,
-            teacherjson: teacherstring
-          })
-          .then(function () {
-            document.getElementById('popupform').hidden = true;
-            console.log("Document successfully written!");
-            alert('ok');
-          })
-          .catch(function (error) {
-            console.error("Error writing document: ", error);
-            alert('error');
-          });
-      }
-
-      myallsaveddata = {};
-
-      function getsaveddata() {
-        document.getElementById('popupform').innerHTML = '';
-        db.collection("savedata").get().then(function (querySnapshot) {
-          myallsaveddata = {};
-          querySnapshot.forEach(function (doc) {
-            // console.log(doc.id, " => ", doc.data());
-            myallsaveddata[doc.id] = doc.data();
-            document.getElementById('popupform').innerHTML += '<button onclick="choosesavedata(this)">' + doc.id;
-          });
-          document.getElementById('popupform').innerHTML +=
-            '</button><hr><button onclick="formaction(this)" style="border-color:black">cancel</button>'
+    function deletesaveddata() {
+      var mydocname = prompt("Enter the data id you want to delete");
+      if (mydocname) {
+        db.collection("savedata").doc(mydocname).delete().then(function () {
+          console.log("Document successfully deleted!");
+          alert('ok');
+          document.getElementById('popupform').hidden = true;
+        }).catch(function (error) {
+          console.error("Error removing document: ", error);
+          alert('error');
         });
       }
 
-      function choosesavedata(x) {
-        var myid = x.innerHTML;
-        venuejson = JSON.parse(myallsaveddata[myid].venuejson);
-        teacherjson = JSON.parse(myallsaveddata[myid].teacherjson);
-        for (var j in venuejson)
-          updatevisualdata(j);
-        if (mynewwindow)
-          updateteachertable();
-        alert('ok');
+    }
+
+    function downloadoutputcsv() {
+      var rows = outputjsondata();
+      var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "output.csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click();
+    }
+
+    function downloadoutputcsv2() {
+      var rows = outputjsondata2();
+      var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "output.csv");
+      document.body.appendChild(link); // Required for FF
+
+      link.click();
+    }
+
+    function downloadallvenuehtml() {
+      for (var j in venuejson) {
+        // console.log(document.getElementById(j+'table'))
+        // console.log(document.getElementById(j+'table'));
+        if (document.getElementById(j + 'table')) {
+          for (var jj = 1; jj < document.getElementById(j + 'table').rows.length; jj++) {
+            for (var kk = 0; kk < document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
+              var tempcourseid = document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(' ');
+              tempcourseid = tempcourseid[tempcourseid.length - 1];
+              if (tempcourseid) {
+                // console.log(tempcourseid,sportsjson[tempcourseid])
+                if (sportsjson[tempcourseid]) {
+                  document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[tempcourseid];
+                }
+              }
+
+            }
+          }
+
+          var rows = '<html><body><h1>' + j + '</h1>' + document.getElementById(j + 'table').outerHTML +
+            '</body></html>';
+          var csvContent = "data:text/html;charset=utf-8," +
+            rows; //"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
+          var encodedUri = encodeURI(csvContent);
+          var link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", j + "output.html");
+          document.body.appendChild(link); // Required for FF
+
+          link.click();
+          if (!confirm('next?')) {
+            return;
+          }
+        }
+      }
+
+    }
+
+    function downloadallteacherhtml() {
+      drawteacher();
+      for (var j in teacherjson) {
+        // console.log(mynewwindow.document.getElementById(j+'table'))
+
+        if (mynewwindow.document.getElementById(j + 'table')) {
+
+
+          for (var jj = 1; jj < mynewwindow.document.getElementById(j + 'table').rows.length; jj++) {
+            for (var kk = 0; kk < mynewwindow.document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
+              var tempcourseid = mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(
+                ' ');
+              tempcourseid = tempcourseid[tempcourseid.length - 1];
+              if (tempcourseid) {
+                // console.log(tempcourseid,sportsjson[tempcourseid])
+                if (sportsjson[tempcourseid]) {
+                  mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[
+                    tempcourseid];
+                }
+              }
+
+            }
+          }
+
+
+          var rows = '<html><body><h1>' + j + '</h1>' + mynewwindow.document.getElementById(j + 'table').outerHTML +
+            '</body></html>';
+          var csvContent = "data:text/html;charset=utf-8," +
+            rows; //"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
+          var encodedUri = encodeURI(csvContent);
+          var link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", j + "output.html");
+          document.body.appendChild(link); // Required for FF
+
+          link.click();
+          if (!confirm('next?')) {
+            return;
+          }
+        }
+      }
+
+    }
+
+    function getvenuecourselist(myvenue, x, y) {
+      var mycourselist = venuejson[myvenue].coursejson;
+      var oklist = {};
+      for (var j in mycourselist) {
+        var myteacher = mycourselist[j].teacher;
+        if (mycourselist[j].slotct < 2 && !venuejson[myvenue].data[x][y][j] && Object.entries(teacherjson[myteacher]
+            .data[x][y]) == 0) {
+          oklist[j] = mycourselist[j];
+        }
+      }
+      // console.log(oklist)
+      return (oklist);
+    }
+
+    function getsortedcourselist(mycourselist, myvenue, x, y) {
+      var oklist = [];
+      for (var j in mycourselist) {
+        var myteacher = mycourselist[j].teacher;
+        if (checkcourseok(j, myvenue, myteacher, x, y) != -1) {
+          var nowpos = oklist.length;
+          oklist[nowpos] = mycourselist[j];
+          oklist[nowpos].course = j;
+        }
+      }
+      // console.log(oklist)
+      for (var j = 0; j < oklist.length - 1; j++) {
+        for (var k = j + 1; k < oklist.length; k++) {
+          if (teacherjson[oklist[j].teacher].fillct < teacherjson[oklist[k].teacher].fillct) {
+            var temp = oklist[j];
+            oklist[j] = oklist[k];
+            oklist[k] = temp;
+          }
+        }
+      }
+      return (oklist);
+    }
+
+    function choosecourse(x) {
+      // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
+      if (x.style.backgroundColor != 'rgb(221, 221, 221)' && x.style.backgroundColor != 'grey') {
+        var tablex = x.parentNode.rowIndex;
+        var tabley = x.cellIndex;
+        var mytable = x.parentNode.parentNode.parentNode;
+        var myvenue = mytable.id.split('table')[0];
+        if (tablex > 0 && tableytojsony(myvenue, tablex, tabley) != -1) {
+          // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
+          var mypopupform = document.getElementById('popupform');
+          mypopupform.hidden = false;
+          mypopupform.innerHTML = '<h1>' + myvenue + '  ' + mytable.rows[0].cells[tableytojsony(myvenue, tablex,
+            tabley) + 1].innerHTML + ' ' + tablextojsonx(myvenue, tablex) + '</h2>';
+          var oklist = getvenuecourselist(myvenue, tablextojsonx(myvenue, tablex), tableytojsony(myvenue, tablex,
+            tabley));
+          for (var j in oklist) {
+            mypopupform.innerHTML += '<button onmouseout="clearswitchable(' + "'" + myvenue + "'" +
+              ')"  onmouseover="previewaction(this,' + "'" + myvenue + "'" +
+              ',' + tablex + ',' +
+              tabley + ',' + "'" + j + "'" + ',' + "'" + oklist[j].teacher + "'" + ')" onclick="formaction(this,' +
+              "'" +
+              myvenue + "'" + ',' + tablex + ',' +
+              tabley + ',' + "'" + j + "'" + ')" style="border-color: ' + oklist[j].color + '">' + oklist[j].teacher +
+              ' ' + j + '</button>';
+          }
+          mypopupform.innerHTML += '<hr><button onclick="formaction(this,' + "'" + myvenue + "'" + ',' + tablex + ',' +
+            tabley + ',' + "'" + j + "'" +
+            ')" style="border-color:black">clear</button><button onclick="formaction(this)" style="border-color:black">cancel</button>';
+
+        }
+      } else {
         document.getElementById('popupform').hidden = true;
       }
 
-      function loadsaveddata() {
-        document.getElementById('popupform').hidden = false;
-        getsaveddata();
-      }
+    }
 
-      function deletesaveddata() {
-        var mydocname = prompt("Enter the data id you want to delete");
-        if (mydocname) {
-          db.collection("savedata").doc(mydocname).delete().then(function () {
-            console.log("Document successfully deleted!");
-            alert('ok');
-            document.getElementById('popupform').hidden = true;
-          }).catch(function (error) {
-            console.error("Error removing document: ", error);
-            alert('error');
-          });
-        }
-
-      }
-
-      function downloadoutputcsv() {
-        var rows = outputjsondata();
-        var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "output.csv");
-        document.body.appendChild(link); // Required for FF
-
-        link.click();
-      }
-
-      function downloadoutputcsv2() {
-        var rows = outputjsondata2();
-        var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "output.csv");
-        document.body.appendChild(link); // Required for FF
-
-        link.click();
-      }
-
-      function downloadallvenuehtml() {
-        for (var j in venuejson) {
-          // console.log(document.getElementById(j+'table'))
-          // console.log(document.getElementById(j+'table'));
-          if (document.getElementById(j + 'table')) {
-            for (var jj = 1; jj < document.getElementById(j + 'table').rows.length; jj++) {
-              for (var kk = 0; kk < document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
-                var tempcourseid = document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(' ');
-                tempcourseid = tempcourseid[tempcourseid.length - 1];
-                if (tempcourseid) {
-                  // console.log(tempcourseid,sportsjson[tempcourseid])
-                  if (sportsjson[tempcourseid]) {
-                    document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[tempcourseid];
-                  }
-                }
-
-              }
-            }
-
-            var rows = '<html><body><h1>' + j + '</h1>' + document.getElementById(j + 'table').outerHTML +
-              '</body></html>';
-            var csvContent = "data:text/html;charset=utf-8," +
-              rows; //"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", j + "output.html");
-            document.body.appendChild(link); // Required for FF
-
-            link.click();
-            if (!confirm('next?')) {
-              return;
-            }
-          }
-        }
-
-      }
-
-      function downloadallteacherhtml() {
-        drawteacher();
-        for (var j in teacherjson) {
-          // console.log(mynewwindow.document.getElementById(j+'table'))
-
-          if (mynewwindow.document.getElementById(j + 'table')) {
-
-
-            for (var jj = 1; jj < mynewwindow.document.getElementById(j + 'table').rows.length; jj++) {
-              for (var kk = 0; kk < mynewwindow.document.getElementById(j + 'table').rows[jj].cells.length; kk++) {
-                var tempcourseid = mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML.split(
-                  ' ');
-                tempcourseid = tempcourseid[tempcourseid.length - 1];
-                if (tempcourseid) {
-                  // console.log(tempcourseid,sportsjson[tempcourseid])
-                  if (sportsjson[tempcourseid]) {
-                    mynewwindow.document.getElementById(j + 'table').rows[jj].cells[kk].innerHTML += ' ' + sportsjson[
-                      tempcourseid];
-                  }
-                }
-
-              }
-            }
-
-
-            var rows = '<html><body><h1>' + j + '</h1>' + mynewwindow.document.getElementById(j + 'table').outerHTML +
-              '</body></html>';
-            var csvContent = "data:text/html;charset=utf-8," +
-              rows; //"data:text/csv;charset=utf-8," + rows.map(e=>e.join(",")).join("\n");
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", j + "output.html");
-            document.body.appendChild(link); // Required for FF
-
-            link.click();
-            if (!confirm('next?')) {
-              return;
-            }
-          }
-        }
-
-      }
-
-      function getvenuecourselist(myvenue, x, y) {
-        var mycourselist = venuejson[myvenue].coursejson;
-        var oklist = {};
-        for (var j in mycourselist) {
-          var myteacher = mycourselist[j].teacher;
-          if (mycourselist[j].slotct < 2 && !venuejson[myvenue].data[x][y][j] && Object.entries(teacherjson[myteacher]
-              .data[x][y]) == 0) {
-            oklist[j] = mycourselist[j];
-          }
-        }
-        // console.log(oklist)
-        return (oklist);
-      }
-
-      function getsortedcourselist(mycourselist, myvenue, x, y) {
-        var oklist = [];
-        for (var j in mycourselist) {
-          var myteacher = mycourselist[j].teacher;
-          if (checkcourseok(j, myvenue, myteacher, x, y) != -1) {
-            var nowpos = oklist.length;
-            oklist[nowpos] = mycourselist[j];
-            oklist[nowpos].course = j;
-          }
-        }
-        // console.log(oklist)
-        for (var j = 0; j < oklist.length - 1; j++) {
-          for (var k = j + 1; k < oklist.length; k++) {
-            if (teacherjson[oklist[j].teacher].fillct < teacherjson[oklist[k].teacher].fillct) {
-              var temp = oklist[j];
-              oklist[j] = oklist[k];
-              oklist[k] = temp;
-            }
-          }
-        }
-        return (oklist);
-      }
-
-      function choosecourse(x) {
-        // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
-        if (x.style.backgroundColor != 'rgb(221, 221, 221)' && x.style.backgroundColor != 'grey') {
-          var tablex = x.parentNode.rowIndex;
-          var tabley = x.cellIndex;
-          var mytable = x.parentNode.parentNode.parentNode;
-          var myvenue = mytable.id.split('table')[0];
-          if (tablex > 0 && tableytojsony(myvenue, tablex, tabley) != -1) {
-            // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
-            var mypopupform = document.getElementById('popupform');
-            mypopupform.hidden = false;
-            mypopupform.innerHTML = '<h1>' + myvenue + '  ' + mytable.rows[0].cells[tableytojsony(myvenue, tablex,
-              tabley) + 1].innerHTML + ' ' + tablextojsonx(myvenue, tablex) + '</h2>';
-            var oklist = getvenuecourselist(myvenue, tablextojsonx(myvenue, tablex), tableytojsony(myvenue, tablex,
-              tabley));
-            for (var j in oklist) {
-              mypopupform.innerHTML += '<button onmouseout="clearswitchable(' + "'" + myvenue + "'" +
-                ')"  onmouseover="previewaction(this,' + "'" + myvenue + "'" +
-                ',' + tablex + ',' +
-                tabley + ',' + "'" + j + "'" + ',' + "'" + oklist[j].teacher + "'" + ')" onclick="formaction(this,' +
-                "'" +
-                myvenue + "'" + ',' + tablex + ',' +
-                tabley + ',' + "'" + j + "'" + ')" style="border-color: ' + oklist[j].color + '">' + oklist[j].teacher +
-                ' ' + j + '</button>';
-            }
-            mypopupform.innerHTML += '<hr><button onclick="formaction(this,' + "'" + myvenue + "'" + ',' + tablex + ',' +
-              tabley + ',' + "'" + j + "'" +
-              ')" style="border-color:black">clear</button><button onclick="formaction(this)" style="border-color:black">cancel</button>';
-
-          }
-        } else {
-          document.getElementById('popupform').hidden = true;
-        }
-
-      }
-
-      function clearswitchable(myvenue) {
-        var x = document.getElementById(myvenue + 'table');
-        for (var j = 0; j < x.rows.length; j++) {
-          for (var k = 0; k < x.rows[j].cells.length; k++) {
-            if (x.rows[j].cells[k].style.backgroundColor == 'yellow') {
-              x.rows[j].cells[k].style.backgroundColor = ''
-            }
+    function clearswitchable(myvenue) {
+      var x = document.getElementById(myvenue + 'table');
+      for (var j = 0; j < x.rows.length; j++) {
+        for (var k = 0; k < x.rows[j].cells.length; k++) {
+          if (x.rows[j].cells[k].style.backgroundColor == 'yellow') {
+            x.rows[j].cells[k].style.backgroundColor = ''
           }
         }
       }
+    }
 
-      function switchable(x, checkteacher, checkcourse) {
-        // console.log(x, checkteacher, checkcourse)
+    function switchable(x, checkteacher, checkcourse) {
+      // console.log(x, checkteacher, checkcourse)
 
-        if (x.style.backgroundColor != 'rgb(221, 221, 221)' && x.style.backgroundColor != 'grey') {
-          const tablex = x.parentNode.rowIndex;
-          const tabley = x.cellIndex;
-          const mytable = x.parentNode.parentNode.parentNode;
-          const myvenue = mytable.id.split('table')[0];
-          if (tablex > 0 && tableytojsony(myvenue, tablex, tabley) != -1) {
-            // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
-            const oklist = getvenuecourselist(myvenue, tablextojsonx(myvenue, tablex), tableytojsony(myvenue, tablex,
-              tabley));
+      if (x.style.backgroundColor != 'rgb(221, 221, 221)' && x.style.backgroundColor != 'grey') {
+        const tablex = x.parentNode.rowIndex;
+        const tabley = x.cellIndex;
+        const mytable = x.parentNode.parentNode.parentNode;
+        const myvenue = mytable.id.split('table')[0];
+        if (tablex > 0 && tableytojsony(myvenue, tablex, tabley) != -1) {
+          // console.log(x.parentNode.rowIndex,x.cellIndex,x.parentNode.parentNode.parentNode.id);
+          const oklist = getvenuecourselist(myvenue, tablextojsonx(myvenue, tablex), tableytojsony(myvenue, tablex,
+            tabley));
 
-            if (oklist[checkcourse]) {
-              if (oklist[checkcourse].teacher == checkteacher) {
-                return 1
-              }
+          if (oklist[checkcourse]) {
+            if (oklist[checkcourse].teacher == checkteacher) {
+              return 1
             }
+          }
 
 
 
 
+        }
+      }
+      return 0;
+    }
+
+    function previewaction(mybutton, myvenue, tablex, tabley, mycourse, myteacher) {
+      // console.log(mybutton, myvenue, tablex, tabley, mycourse, myteacher)
+      findteacher(undefined, myteacher)
+      var mytable = document.getElementById(myvenue + 'table');
+      clearswitchable(myvenue)
+      for (var j = 0; j < mytable.rows.length; j++) {
+        for (var k = 0; k < mytable.rows[j].cells.length; k++) {
+          // console.log(switchable(mytable.rows[j].cells[k], myteacher, mycourse))
+          if (switchable(mytable.rows[j].cells[k], myteacher, mycourse)) {
+            mytable.rows[j].cells[k].style.backgroundColor = 'yellow'
           }
         }
-        return 0;
       }
+    }
 
-      function previewaction(mybutton, myvenue, tablex, tabley, mycourse, myteacher) {
-        // console.log(mybutton, myvenue, tablex, tabley, mycourse, myteacher)
-        findteacher(undefined, myteacher)
+    function formaction(mybutton, myvenue, tablex, tabley, mycourse) {
+      // console.log(mybutton, myvenue, tablex, tabley, mycourse);
+
+      if (mybutton.innerHTML == 'cancel') {
+        document.getElementById('popupform').hidden = true;
+      } else if (mybutton.innerHTML == 'switch') {
+
+      } else if (mybutton.innerHTML == 'clear') {
+        var tempjsonx = tablextojsonx(myvenue, tablex);
+        var tempjsony = tableytojsony(myvenue, tablex, tabley);
         var mytable = document.getElementById(myvenue + 'table');
-        clearswitchable(myvenue)
-        for (var j = 0; j < mytable.rows.length; j++) {
-          for (var k = 0; k < mytable.rows[j].cells.length; k++) {
-            // console.log(switchable(mytable.rows[j].cells[k], myteacher, mycourse))
-            if (switchable(mytable.rows[j].cells[k], myteacher, mycourse)) {
-              mytable.rows[j].cells[k].style.backgroundColor = 'yellow'
-            }
-          }
-        }
-      }
 
-      function formaction(mybutton, myvenue, tablex, tabley, mycourse) {
-        // console.log(mybutton, myvenue, tablex, tabley, mycourse);
-
-        if (mybutton.innerHTML == 'cancel') {
-          document.getElementById('popupform').hidden = true;
-        } else if (mybutton.innerHTML == 'switch') {
-
-        } else if (mybutton.innerHTML == 'clear') {
-          var tempjsonx = tablextojsonx(myvenue, tablex);
-          var tempjsony = tableytojsony(myvenue, tablex, tabley);
-          var mytable = document.getElementById(myvenue + 'table');
-
-          // mytable.rows[tablex].cells[tabley].innerHTML = '';
-          if (mytable.rows[tablex].cells[tabley].innerHTML != '') {
-            var tempcourse = mytable.rows[tablex].cells[tabley].innerHTML.split(' ');
-            tempcourse = tempcourse[tempcourse.length - 1];
-            var tempteacher = mytable.rows[tablex].cells[tabley].innerHTML.split(' ' + tempcourse)[0];
-            updatecanceldata(myvenue, tempteacher, tempjsonx, tempjsony, tempcourse);
-            //visual
-            mytable.rows[tablex].cells[tabley].innerHTML = '';
-            mytable.rows[tablex].cells[tabley].style.borderColor = 'black';
-            mytable.rows[tablex].cells[tabley].style.borderWidth = '1px';
-            document.getElementById(myvenue + 'fillct').innerHTML++;
-
-            if (mynewwindow) {
-              mynewwindow.document.getElementById(tempteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
-                tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = '';
-              // updateteachertable();
-            }
-          }
-          document.getElementById('popupform').hidden = true;
-
-        } else {
-          var tempjsonx = tablextojsonx(myvenue, tablex);
-          var tempjsony = tableytojsony(myvenue, tablex, tabley);
-          var mytable = document.getElementById(myvenue + 'table');
-
-          if (mytable.rows[tablex].cells[tabley].innerHTML != '') {
-            var tempcourse = mytable.rows[tablex].cells[tabley].innerHTML.split(' ');
-            tempcourse = tempcourse[tempcourse.length - 1];
-            var tempteacher = mytable.rows[tablex].cells[tabley].innerHTML.split(' ' + tempcourse)[0];
-            updatecanceldata(myvenue, tempteacher, tempjsonx, tempjsony, tempcourse);
-
-            //visual
-            if (mynewwindow)
-              mynewwindow.document.getElementById(tempteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
-                tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = '';
-            document.getElementById(myvenue + 'fillct').innerHTML++;
-          }
-          var myteacher = venuejson[myvenue].coursejson[mycourse].teacher;
-          updateadddata(myvenue, myteacher, tempjsonx, tempjsony, mycourse);
-          document.getElementById('popupform').hidden = true;
-
-
+        // mytable.rows[tablex].cells[tabley].innerHTML = '';
+        if (mytable.rows[tablex].cells[tabley].innerHTML != '') {
+          var tempcourse = mytable.rows[tablex].cells[tabley].innerHTML.split(' ');
+          tempcourse = tempcourse[tempcourse.length - 1];
+          var tempteacher = mytable.rows[tablex].cells[tabley].innerHTML.split(' ' + tempcourse)[0];
+          updatecanceldata(myvenue, tempteacher, tempjsonx, tempjsony, tempcourse);
           //visual
-          mytable.rows[tablex].cells[tabley].innerHTML = mybutton.innerHTML;
-          mytable.rows[tablex].cells[tabley].style.borderColor = venuejson[myvenue].coursejson[mycourse].color;
-          mytable.rows[tablex].cells[tabley].style.borderWidth = '4px';
-          document.getElementById(myvenue + 'fillct').innerHTML--;
+          mytable.rows[tablex].cells[tabley].innerHTML = '';
+          mytable.rows[tablex].cells[tabley].style.borderColor = 'black';
+          mytable.rows[tablex].cells[tabley].style.borderWidth = '1px';
+          document.getElementById(myvenue + 'fillct').innerHTML++;
 
           if (mynewwindow) {
-            // mynewwindow.document.getElementById(tempteacher+'table').rows[tablextojsonx(myvenue,tablex)].cells[tableytojsony(myvenue,tablex,tabley)+1].innerHTML = '';
-            mynewwindow.document.getElementById(myteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
-              tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = myvenue + ' ' + mycourse;
+            mynewwindow.document.getElementById(tempteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
+              tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = '';
+            // updateteachertable();
           }
-          // updateteachertable();
         }
+        document.getElementById('popupform').hidden = true;
 
+      } else {
+        var tempjsonx = tablextojsonx(myvenue, tablex);
+        var tempjsony = tableytojsony(myvenue, tablex, tabley);
+        var mytable = document.getElementById(myvenue + 'table');
+
+        if (mytable.rows[tablex].cells[tabley].innerHTML != '') {
+          var tempcourse = mytable.rows[tablex].cells[tabley].innerHTML.split(' ');
+          tempcourse = tempcourse[tempcourse.length - 1];
+          var tempteacher = mytable.rows[tablex].cells[tabley].innerHTML.split(' ' + tempcourse)[0];
+          updatecanceldata(myvenue, tempteacher, tempjsonx, tempjsony, tempcourse);
+
+          //visual
+          if (mynewwindow)
+            mynewwindow.document.getElementById(tempteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
+              tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = '';
+          document.getElementById(myvenue + 'fillct').innerHTML++;
+        }
+        var myteacher = venuejson[myvenue].coursejson[mycourse].teacher;
+        updateadddata(myvenue, myteacher, tempjsonx, tempjsony, mycourse);
+        document.getElementById('popupform').hidden = true;
+
+
+        //visual
+        mytable.rows[tablex].cells[tabley].innerHTML = mybutton.innerHTML;
+        mytable.rows[tablex].cells[tabley].style.borderColor = venuejson[myvenue].coursejson[mycourse].color;
+        mytable.rows[tablex].cells[tabley].style.borderWidth = '4px';
+        document.getElementById(myvenue + 'fillct').innerHTML--;
+
+        if (mynewwindow) {
+          // mynewwindow.document.getElementById(tempteacher+'table').rows[tablextojsonx(myvenue,tablex)].cells[tableytojsony(myvenue,tablex,tabley)+1].innerHTML = '';
+          mynewwindow.document.getElementById(myteacher + 'table').rows[tablextojsonx(myvenue, tablex)].cells[
+            tableytojsony(myvenue, tablex, tabley) + 1].innerHTML = myvenue + ' ' + mycourse;
+        }
+        // updateteachertable();
       }
 
-      async function updateadddata(myvenue, myteacher, x, y, mycourse) {
-        // console.log('add',myvenue, myteacher, tablex, tabley, mycourse)
-        // var tempjsonx = tablextojsonx(myvenue,tablex);
-        // var tempjsony = tableytojsony(myvenue,tablex,tabley);
-        //console.log(checkcourseok(mycourse,myvenue,myteacher,x,y))
-        console.log(venuejson[myvenue].coursejson,mycourse])
-        var tempjsonx = x;
-        var tempjsony = y;
-        venuejson[myvenue].data[tempjsonx][tempjsony][mycourse] = myteacher;
-        venuejson[myvenue].coursejson[mycourse].slotct++;
-        venuejson[myvenue].fillct--;
-        teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse] = myvenue;
-        teacherjson[myteacher].fillct--;
-        teacherjson[myteacher].dayct[tempjsony]++;
-        if (tempjsonx == 1)
-          teacherjson[myteacher].eighthalf++;
-        if (teacherjson[myteacher].daydata[tempjsony][mycourse])
-          teacherjson[myteacher].daydata[tempjsony][mycourse]++;
-        else
-          teacherjson[myteacher].daydata[tempjsony][mycourse] = 1;
-        return
-      }
+    }
 
-      function updatecanceldata(myvenue, myteacher, x, y, mycourse) {
-        // console.log('delete',myvenue, myteacher, tablex, tabley, mycourse)
-        // var tempjsonx = tablextojsonx(myvenue,tablex);
-        // var tempjsony = tableytojsony(myvenue,tablex,tabley);
-        var tempjsonx = x;
-        var tempjsony = y;
-        delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
-        venuejson[myvenue].coursejson[mycourse].slotct--;
-        venuejson[myvenue].fillct++;
-        delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
-        teacherjson[myteacher].fillct++;
-        teacherjson[myteacher].dayct[tempjsony]--;
-        if (tempjsonx == 1)
-          teacherjson[myteacher].eighthalf--;
-        teacherjson[myteacher].daydata[tempjsony][mycourse]--;
-      }
+    async function updateadddata(myvenue, myteacher, x, y, mycourse) {
+      // console.log('add',myvenue, myteacher, tablex, tabley, mycourse)
+      // var tempjsonx = tablextojsonx(myvenue,tablex);
+      // var tempjsony = tableytojsony(myvenue,tablex,tabley);
+      //console.log(checkcourseok(mycourse,myvenue,myteacher,x,y))
+      console.log(venuejson[myvenue].coursejson,mycourse)
+      var tempjsonx = x;
+      var tempjsony = y;
+      venuejson[myvenue].data[tempjsonx][tempjsony][mycourse] = myteacher;
+      venuejson[myvenue].coursejson[mycourse].slotct++;
+      venuejson[myvenue].fillct--;
+      teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse] = myvenue;
+      teacherjson[myteacher].fillct--;
+      teacherjson[myteacher].dayct[tempjsony]++;
+      if (tempjsonx == 1)
+        teacherjson[myteacher].eighthalf++;
+      if (teacherjson[myteacher].daydata[tempjsony][mycourse])
+        teacherjson[myteacher].daydata[tempjsony][mycourse]++;
+      else
+        teacherjson[myteacher].daydata[tempjsony][mycourse] = 1;
+      return
+    }
 
-      function checkcourseok(mycourse, myvenue, myteacher, x, y) {
-        //logic error control (course already filled/no more course to fill/teacher is doing other things)
-        if (!(venuejson[myvenue].coursejson[mycourse].slotct < 2 && !venuejson[myvenue].data[x][y][j] && Object.entries(
-            teacherjson[myteacher].data[x][y]) == 0))
+    function updatecanceldata(myvenue, myteacher, x, y, mycourse) {
+      // console.log('delete',myvenue, myteacher, tablex, tabley, mycourse)
+      // var tempjsonx = tablextojsonx(myvenue,tablex);
+      // var tempjsony = tableytojsony(myvenue,tablex,tabley);
+      var tempjsonx = x;
+      var tempjsony = y;
+      delete venuejson[myvenue].data[tempjsonx][tempjsony][mycourse];
+      venuejson[myvenue].coursejson[mycourse].slotct--;
+      venuejson[myvenue].fillct++;
+      delete teacherjson[myteacher].data[tempjsonx][tempjsony][mycourse];
+      teacherjson[myteacher].fillct++;
+      teacherjson[myteacher].dayct[tempjsony]--;
+      if (tempjsonx == 1)
+        teacherjson[myteacher].eighthalf--;
+      teacherjson[myteacher].daydata[tempjsony][mycourse]--;
+    }
+
+    function checkcourseok(mycourse, myvenue, myteacher, x, y) {
+      //logic error control (course already filled/no more course to fill/teacher is doing other things)
+      if (!(venuejson[myvenue].coursejson[mycourse].slotct < 2 && !venuejson[myvenue].data[x][y][j] && Object.entries(
+          teacherjson[myteacher].data[x][y]) == 0))
+        return -1;
+      //no slot left
+      if (venuejson[myvenue].disabledata[x][y] + Object.keys(venuejson[myvenue].data[x][y]).length >= venuejson[
+          myvenue]
+        .slotsize)
+        return -1;
+      //teacher one day shouldn't > 4 lesson
+      if (teacherjson[myteacher].dayct[y] >= 4)
+        return -1;
+      //same lesson should not appear on near day
+      if (y - 1 > 0 && teacherjson[myteacher].daydata[y - 1][mycourse] && teacherjson[myteacher].daydata[y - 1][
+          mycourse
+        ] > 0 || y + 1 < 7 && teacherjson[myteacher].daydata[y + 1][mycourse] && teacherjson[myteacher]
+        .daydata[y + 1][mycourse] > 0)
+        return -1;
+      //if same course appear in the same day must be double lesson
+      if (teacherjson[myteacher].daydata[y][mycourse])
+        if (!(teacherjson[myteacher].data[x - 1][y][mycourse] || teacherjson[myteacher].data[x + 1][y][mycourse]))
           return -1;
-        //no slot left
-        if (venuejson[myvenue].disabledata[x][y] + Object.keys(venuejson[myvenue].data[x][y]).length >= venuejson[
-            myvenue]
-          .slotsize)
-          return -1;
-        //teacher one day shouldn't > 4 lesson
-        if (teacherjson[myteacher].dayct[y] >= 4)
-          return -1;
-        //same lesson should not appear on near day
-        if (y - 1 > 0 && teacherjson[myteacher].daydata[y - 1][mycourse] && teacherjson[myteacher].daydata[y - 1][
-            mycourse
-          ] > 0 || y + 1 < 7 && teacherjson[myteacher].daydata[y + 1][mycourse] && teacherjson[myteacher]
-          .daydata[y + 1][mycourse] > 0)
-          return -1;
-        //if same course appear in the same day must be double lesson
-        if (teacherjson[myteacher].daydata[y][mycourse])
-          if (!(teacherjson[myteacher].data[x - 1][y][mycourse] || teacherjson[myteacher].data[x + 1][y][mycourse]))
+
+      //at most 3 lesson tgt
+      if (Object.keys(teacherjson[myteacher].data[x - 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x -
+          2][y]).length > 0 ||
+        Object.keys(teacherjson[myteacher].data[x - 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x +
+          1][
+          y
+        ]).length > 0 ||
+        Object.keys(teacherjson[myteacher].data[x + 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x +
+          2][
+          y
+        ]).length > 0)
+        return -1;
+
+      //eight half lesson shouldn't > 2 each teacher
+      if (x == 1 && teacherjson[myteacher].eighthalf >= 1)
+        return -1;
+
+      if (myvenue == 'HCF') {
+        var tempct = 0;
+        for (var j in venuejson[myvenue].data[x][y]) {
+          if (sportsjson[mycourse] == sportsjson[j]) {
+            tempct++;
+          }
+        }
+        if (sportsjson[mycourse] == 'PC') {
+          if (tempct >= 2)
             return -1;
-
-        //at most 3 lesson tgt
-        if (Object.keys(teacherjson[myteacher].data[x - 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x -
-            2][y]).length > 0 ||
-          Object.keys(teacherjson[myteacher].data[x - 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x +
-            1][
-            y
-          ]).length > 0 ||
-          Object.keys(teacherjson[myteacher].data[x + 1][y]).length > 0 && Object.keys(teacherjson[myteacher].data[x +
-            2][
-            y
-          ]).length > 0)
-          return -1;
-
-        //eight half lesson shouldn't > 2 each teacher
-        if (x == 1 && teacherjson[myteacher].eighthalf >= 1)
-          return -1;
-
-        if (myvenue == 'HCF') {
-          var tempct = 0;
-          for (var j in venuejson[myvenue].data[x][y]) {
-            if (sportsjson[mycourse] == sportsjson[j]) {
-              tempct++;
-            }
-          }
-          if (sportsjson[mycourse] == 'PC') {
-            if (tempct >= 2)
-              return -1;
-          } else if (sportsjson[mycourse] == 'WB') {
-            if (tempct >= 2)
-              return -1;
-          } else {
-            if (tempct >= 1)
-              return -1;
-          }
-
-
-        } else if (myvenue == 'LN') {
-          var tempct = 0;
-          for (var j in venuejson[myvenue].data[x][y]) {
-            if (sportsjson[mycourse] == sportsjson[j]) {
-              tempct++;
-            }
-          }
+        } else if (sportsjson[mycourse] == 'WB') {
+          if (tempct >= 2)
+            return -1;
+        } else {
           if (tempct >= 1)
             return -1;
-        } else if (myvenue == 'UCG') {
-          // var tempct = 0;
-          // for (var k=1; k<=10; k++){
-
-          //   for (var j in venuejson[myvenue].data[k][y]){
-          //     // console.log(sportsjson[mycourse],sportsjson[j])
-          //     if (sportsjson[mycourse]!=sportsjson[j]){
-
-          //       tempct++;
-          //       break;
-          //     }
-          //   }
-          //   if (tempct)
-          //     break;
-          // }
-          // if (tempct>=1)
-          //   return -1;
         }
 
-        return 1;
 
+      } else if (myvenue == 'LN') {
+        var tempct = 0;
+        for (var j in venuejson[myvenue].data[x][y]) {
+          if (sportsjson[mycourse] == sportsjson[j]) {
+            tempct++;
+          }
+        }
+        if (tempct >= 1)
+          return -1;
+      } else if (myvenue == 'UCG') {
+        // var tempct = 0;
+        // for (var k=1; k<=10; k++){
+
+        //   for (var j in venuejson[myvenue].data[k][y]){
+        //     // console.log(sportsjson[mycourse],sportsjson[j])
+        //     if (sportsjson[mycourse]!=sportsjson[j]){
+
+        //       tempct++;
+        //       break;
+        //     }
+        //   }
+        //   if (tempct)
+        //     break;
+        // }
+        // if (tempct>=1)
+        //   return -1;
       }
 
-      function genorderlist(x) {
-        // var fillorderx = [2,3,6,7,8,9,4,5,1];
-        var fillorderx = [3, 4, 1, 2, 5, 6, 7, 8, 9];
-        // var fillordery = [1,2,3,4,5];
-        var fillordery = myallpossibley[x];
+      return 1;
 
-        var mylist = [];
+    }
 
-        for (var j = 0; j < fillordery.length; j++) {
-          for (var k = 0; k < 2; k++) {
-            var nowpos = mylist.length;
-            mylist[nowpos] = {};
-            mylist[nowpos].x = fillorderx[k];
-            mylist[nowpos].y = fillordery[j];
-          }
+    function genorderlist(x) {
+      // var fillorderx = [2,3,6,7,8,9,4,5,1];
+      var fillorderx = [3, 4, 1, 2, 5, 6, 7, 8, 9];
+      // var fillordery = [1,2,3,4,5];
+      var fillordery = myallpossibley[x];
+
+      var mylist = [];
+
+      for (var j = 0; j < fillordery.length; j++) {
+        for (var k = 0; k < 2; k++) {
+          var nowpos = mylist.length;
+          mylist[nowpos] = {};
+          mylist[nowpos].x = fillorderx[k];
+          mylist[nowpos].y = fillordery[j];
         }
-
-        for (var j = 0; j < fillordery.length; j++) {
-          for (var k = 2; k < 4; k++) {
-            var nowpos = mylist.length;
-            mylist[nowpos] = {};
-            mylist[nowpos].x = fillorderx[k];
-            mylist[nowpos].y = fillordery[j];
-          }
-        }
-
-        for (var j = 0; j < fillordery.length; j++) {
-          for (var k = 4; k < 6; k++) {
-            var nowpos = mylist.length;
-            mylist[nowpos] = {};
-            mylist[nowpos].x = fillorderx[k];
-            mylist[nowpos].y = fillordery[j];
-          }
-        }
-
-        for (var j = 0; j < fillordery.length; j++) {
-          for (var k = 6; k < 9; k++) {
-            var nowpos = mylist.length;
-            mylist[nowpos] = {};
-            mylist[nowpos].x = fillorderx[k];
-            mylist[nowpos].y = fillordery[j];
-          }
-        }
-        return mylist;
       }
 
-      var minfillct
-      var minfilllist
-
-      async function generate(myvenue) {
-        // console.log(x);
-        var mycourselist = venuejson[myvenue].coursejson;
-        var mylist = {};
-        var myupdatedcourselist = {};
-        for (var j in mycourselist) {
-          if (mycourselist[j].slotct < 2) {
-            myupdatedcourselist[j] = mycourselist[j];
-          }
+      for (var j = 0; j < fillordery.length; j++) {
+        for (var k = 2; k < 4; k++) {
+          var nowpos = mylist.length;
+          mylist[nowpos] = {};
+          mylist[nowpos].x = fillorderx[k];
+          mylist[nowpos].y = fillordery[j];
         }
-
-        minfillct = venuejson[myvenue].fillct;
-
-        for (var j = 0; j < myallpossibley.length; j++) {
-          if (venuejson[myvenue].fillct <= 0) break;
-          if (j > 0 && j % 50 == 0) {
-            if (await confirm(minfillct + " space left, do you want to break it?")) {
-              break;
-            }
-          }
-          var mylist = await genorderlist(j);
-          // console.log(j, mylist)
-          console.log((j / myallpossibley.length) * 100 + '%')
-          document.getElementById(myvenue + 'genprogress').innerHTML
-          // document.getElementById('genprogress').innerHTML
-          = (j / myallpossibley.length) * 100 + '%'
-          var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[0].x, mylist[0].y);
-          for (var jj = 0; jj < mycourselist.length; jj++) {
-            dfsct = 0;
-            await dfs(mylist, 0, myvenue, mycourselist[jj].teacher, mylist[0].x, mylist[0].y, mycourselist[jj].course,
-              myupdatedcourselist);
-
-          }
-        }
-
-        // console.log(minfilllist, minfillct)
-        if (minfillct > 0) {
-          var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[0].x, mylist[0].y);
-          for (var jj = 0; jj < mycourselist.length; jj++) {
-            dfsct = 0;
-            await dfs(mylist, 0, myvenue, mycourselist[jj].teacher, mylist[0].x, mylist[0].y, mycourselist[jj].course,
-              myupdatedcourselist, minfillct);
-
-          }
-          updatevisualdata(myvenue);
-          if (mynewwindow)
-            updateteachertable(); //drawteacher();
-          document.getElementById(myvenue + 'genprogress').innerHTML
-          // document.getElementById('genprogress').innerHTML
-          = 'done'
-          return
-        } else {
-          updatevisualdata(myvenue);
-          if (mynewwindow)
-            updateteachertable(); //drawteacher();
-          document.getElementById(myvenue + 'genprogress').innerHTML
-          // document.getElementById('genprogress').innerHTML
-          = 'done'
-          return
-        }
-
-
       }
 
-      var dfsct = 0;
+      for (var j = 0; j < fillordery.length; j++) {
+        for (var k = 4; k < 6; k++) {
+          var nowpos = mylist.length;
+          mylist[nowpos] = {};
+          mylist[nowpos].x = fillorderx[k];
+          mylist[nowpos].y = fillordery[j];
+        }
+      }
 
-      async function dfs(mylist, n, myvenue, myteacher, x, y, mycourse, myupdatedcourselist, optionminvalue) {
-        //console.log(n,myvenue,myteacher,x,y,mycourse,venuejson[myvenue].fillct);
-        dfsct++;
-        if (venuejson[myvenue].fillct == 0 || dfsct >= 1000)
-          return;
+      for (var j = 0; j < fillordery.length; j++) {
+        for (var k = 6; k < 9; k++) {
+          var nowpos = mylist.length;
+          mylist[nowpos] = {};
+          mylist[nowpos].x = fillorderx[k];
+          mylist[nowpos].y = fillordery[j];
+        }
+      }
+      return mylist;
+    }
 
-        // console.log(venuejson[myvenue].fillct, optionminvalue)
-        if (optionminvalue) {
-          if (venuejson[myvenue].fillct <= optionminvalue) {
-            return
+    var minfillct
+    var minfilllist
+
+    async function generate(myvenue) {
+      // console.log(x);
+      var mycourselist = venuejson[myvenue].coursejson;
+      var mylist = {};
+      var myupdatedcourselist = {};
+      for (var j in mycourselist) {
+        if (mycourselist[j].slotct < 2) {
+          myupdatedcourselist[j] = mycourselist[j];
+        }
+      }
+
+      minfillct = venuejson[myvenue].fillct;
+
+      for (var j = 0; j < myallpossibley.length; j++) {
+        if (venuejson[myvenue].fillct <= 0) break;
+        if (j > 0 && j % 50 == 0) {
+          if (await confirm(minfillct + " space left, do you want to break it?")) {
+            break;
           }
         }
-
-        await updateadddata(myvenue, myteacher, x, y, mycourse);
-
-        if (venuejson[myvenue].fillct < minfillct) {
-          minfillct = venuejson[myvenue].fillct
-          minfilllist = mylist
-          // console.log(minfillct)
-        }
-
-        if (venuejson[myvenue].fillct == 0)
-          return;
-
-        if (optionminvalue) {
-          if (venuejson[myvenue].fillct == optionminvalue) {
-            return
-          }
-        }
-        //console.log(checkcourseok(mycourse,myvenue,myteacher,x+1,y));
-        if (x + 1 <= 9)
-          if (checkcourseok(mycourse, myvenue, myteacher, x + 1, y) != -1)
-            await dfs(mylist, n, myvenue, myteacher, x + 1, y, mycourse, myupdatedcourselist, optionminvalue);
-
-        var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[(n + 1) % 45].x, mylist[(n +
-              1) %
-            45]
-          .y);
-        var nown = n;
-        while (mycourselist.length == 0 && n - nown < 45) {
-          n++;
-          mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[(n + 1) % 45].x, mylist[(n +
-              1) % 45]
-            .y);
-        }
+        var mylist = await genorderlist(j);
+        // console.log(j, mylist)
+        console.log((j / myallpossibley.length) * 100 + '%')
+        document.getElementById(myvenue + 'genprogress').innerHTML
+        // document.getElementById('genprogress').innerHTML 
+        = (j / myallpossibley.length) * 100 + '%'
+        var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[0].x, mylist[0].y);
         for (var jj = 0; jj < mycourselist.length; jj++) {
-          await dfs(mylist, (n + 1), myvenue, mycourselist[jj].teacher, mylist[(n + 1) % 45].x, mylist[(n + 1) % 45]
-            .y,
-            mycourselist[jj].course, myupdatedcourselist, optionminvalue);
+          dfsct = 0;
+          await dfs(mylist, 0, myvenue, mycourselist[jj].teacher, mylist[0].x, mylist[0].y, mycourselist[jj].course,
+            myupdatedcourselist);
+
         }
+      }
 
-        if (venuejson[myvenue].fillct == 0)
-          return;
-        if (optionminvalue) {
-          if (venuejson[myvenue].fillct == optionminvalue) {
-            return
-          }
+      // console.log(minfilllist, minfillct)
+      if (minfillct > 0) {
+        var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[0].x, mylist[0].y);
+        for (var jj = 0; jj < mycourselist.length; jj++) {
+          dfsct = 0;
+          await dfs(mylist, 0, myvenue, mycourselist[jj].teacher, mylist[0].x, mylist[0].y, mycourselist[jj].course,
+            myupdatedcourselist, minfillct);
+
         }
-
-        updatecanceldata(myvenue, myteacher, x, y, mycourse);
-
+        updatevisualdata(myvenue);
+        if (mynewwindow)
+          updateteachertable(); //drawteacher();
+        document.getElementById(myvenue + 'genprogress').innerHTML
+        // document.getElementById('genprogress').innerHTML 
+        = 'done'
+        return
+      } else {
+        updatevisualdata(myvenue);
+        if (mynewwindow)
+          updateteachertable(); //drawteacher();
+        document.getElementById(myvenue + 'genprogress').innerHTML
+        // document.getElementById('genprogress').innerHTML 
+        = 'done'
         return
       }
 
 
-      function updatevisualdata(myvenue) {
-        var myslotsize = venuejson[myvenue].slotsize;
-        var mytable = document.getElementById(myvenue + 'table');
-        for (var j = 1; j <= 10; j++) {
-          for (var k = 1; k <= 6; k++) {
-            var tempdisablelist = {};
-            for (var jj = 1; jj <= myslotsize; jj++) {
-              var mycell = mytable.rows[jsonxtotablex(myvenue, j, jj)].cells[jsonytotabley(myvenue, j, k, jj)];
-              if (mycell.style.backgroundColor != 'rgb(221, 221, 221)' && mycell.style.backgroundColor != 'grey') {
-                mycell.innerHTML = '';
-                mycell.style.borderWidth = '1px';
-                mycell.style.borderColor = 'black';
-              } else if (mycell.style.backgroundColor == 'rgb(221, 221, 221)') {
-                tempdisablelist[mycell.innerHTML] = 1;
-              }
+    }
+
+    var dfsct = 0;
+
+    async function dfs(mylist, n, myvenue, myteacher, x, y, mycourse, myupdatedcourselist, optionminvalue) {
+      //console.log(n,myvenue,myteacher,x,y,mycourse,venuejson[myvenue].fillct);
+      dfsct++;
+      if (venuejson[myvenue].fillct == 0 || dfsct >= 1000)
+        return;
+
+      // console.log(venuejson[myvenue].fillct, optionminvalue)
+      if (optionminvalue) {
+        if (venuejson[myvenue].fillct <= optionminvalue) {
+          return
+        }
+      }
+
+      await updateadddata(myvenue, myteacher, x, y, mycourse);
+
+      if (venuejson[myvenue].fillct < minfillct) {
+        minfillct = venuejson[myvenue].fillct
+        minfilllist = mylist
+        // console.log(minfillct)
+      }
+
+      if (venuejson[myvenue].fillct == 0)
+        return;
+
+      if (optionminvalue) {
+        if (venuejson[myvenue].fillct == optionminvalue) {
+          return
+        }
+      }
+      //console.log(checkcourseok(mycourse,myvenue,myteacher,x+1,y));
+      if (x + 1 <= 9)
+        if (checkcourseok(mycourse, myvenue, myteacher, x + 1, y) != -1)
+          await dfs(mylist, n, myvenue, myteacher, x + 1, y, mycourse, myupdatedcourselist, optionminvalue);
+
+      var mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[(n + 1) % 45].x, mylist[(n +
+            1) %
+          45]
+        .y);
+      var nown = n;
+      while (mycourselist.length == 0 && n - nown < 45) {
+        n++;
+        mycourselist = await getsortedcourselist(myupdatedcourselist, myvenue, mylist[(n + 1) % 45].x, mylist[(n +
+            1) % 45]
+          .y);
+      }
+      for (var jj = 0; jj < mycourselist.length; jj++) {
+        await dfs(mylist, (n + 1), myvenue, mycourselist[jj].teacher, mylist[(n + 1) % 45].x, mylist[(n + 1) % 45]
+          .y,
+          mycourselist[jj].course, myupdatedcourselist, optionminvalue);
+      }
+
+      if (venuejson[myvenue].fillct == 0)
+        return;
+      if (optionminvalue) {
+        if (venuejson[myvenue].fillct == optionminvalue) {
+          return
+        }
+      }
+
+      updatecanceldata(myvenue, myteacher, x, y, mycourse);
+
+      return
+    }
+
+
+    function updatevisualdata(myvenue) {
+      var myslotsize = venuejson[myvenue].slotsize;
+      var mytable = document.getElementById(myvenue + 'table');
+      for (var j = 1; j <= 10; j++) {
+        for (var k = 1; k <= 6; k++) {
+          var tempdisablelist = {};
+          for (var jj = 1; jj <= myslotsize; jj++) {
+            var mycell = mytable.rows[jsonxtotablex(myvenue, j, jj)].cells[jsonytotabley(myvenue, j, k, jj)];
+            if (mycell.style.backgroundColor != 'rgb(221, 221, 221)' && mycell.style.backgroundColor != 'grey') {
+              mycell.innerHTML = '';
+              mycell.style.borderWidth = '1px';
+              mycell.style.borderColor = 'black';
+            } else if (mycell.style.backgroundColor == 'rgb(221, 221, 221)') {
+              tempdisablelist[mycell.innerHTML] = 1;
             }
-            var tempdatalist = venuejson[myvenue].data[j][k];
-            var tempslotnum = 0;
-            for (jj in tempdatalist) {
-              var myteacher = tempdatalist[jj];
-              var mycourse = jj;
-              if (!tempdisablelist[myteacher + ' ' + mycourse]) {
+          }
+          var tempdatalist = venuejson[myvenue].data[j][k];
+          var tempslotnum = 0;
+          for (jj in tempdatalist) {
+            var myteacher = tempdatalist[jj];
+            var mycourse = jj;
+            if (!tempdisablelist[myteacher + ' ' + mycourse]) {
+              tempslotnum++;
+              var mycell = mytable.rows[jsonxtotablex(myvenue, j, tempslotnum)].cells[jsonytotabley(myvenue, j, k,
+                tempslotnum)];
+              while ((mycell.style.backgroundColor == 'rgb(221, 221, 221)' || mycell.style.backgroundColor ==
+                  'grey') &&
+                tempslotnum < myslotsize) {
                 tempslotnum++;
-                var mycell = mytable.rows[jsonxtotablex(myvenue, j, tempslotnum)].cells[jsonytotabley(myvenue, j, k,
+                mycell = mytable.rows[jsonxtotablex(myvenue, j, tempslotnum)].cells[jsonytotabley(myvenue, j, k,
                   tempslotnum)];
-                while ((mycell.style.backgroundColor == 'rgb(221, 221, 221)' || mycell.style.backgroundColor ==
-                    'grey') &&
-                  tempslotnum < myslotsize) {
-                  tempslotnum++;
-                  mycell = mytable.rows[jsonxtotablex(myvenue, j, tempslotnum)].cells[jsonytotabley(myvenue, j, k,
-                    tempslotnum)];
-                }
-
-                mycell.innerHTML = myteacher + ' ' + mycourse;
-                mycell.style.borderWidth = '4px';
-                mycell.style.borderColor = venuejson[myvenue].coursejson[mycourse].color;
               }
 
-            }
-          }
-        }
-        document.getElementById(myvenue + 'fillct').innerHTML = venuejson[myvenue].fillct
-
-      }
-
-      window.onbeforeunload = closingCode;
-
-      function closingCode() {
-        if (mynewwindow)
-          mynewwindow.close();
-        return null;
-      }
-
-      function findteacher(x, y) {
-        if (mynewwindow) {
-          var mytable = mynewwindow.document.getElementById(y + 'table');
-          if (mytable) {
-            mytable.previousSibling.scrollIntoView();
-            if (x) {
-              mytable.previousSibling.style.borderLeft = '3px solid red';
-              mytable.previousSibling.style.paddingLeft = '10px';
-              for (var j = 1; j < mytable.rows.length; j++) {
-                for (var k = 2; k < mytable.rows[j].cells.length; k++) {
-                  if (mytable.rows[j].cells[k].innerHTML.indexOf(x) != -1) {
-                    mytable.rows[j].cells[k].style.border = '3px solid red';
-                  }
-                }
-              }
+              mycell.innerHTML = myteacher + ' ' + mycourse;
+              mycell.style.borderWidth = '4px';
+              mycell.style.borderColor = venuejson[myvenue].coursejson[mycourse].color;
             }
 
           }
-
         }
-
       }
+      document.getElementById(myvenue + 'fillct').innerHTML = venuejson[myvenue].fillct
 
-      function cancelfindteacher(x, y) {
-        if (mynewwindow) {
-          var mytable = mynewwindow.document.getElementById(y + 'table');
-          if (mytable) {
-            mytable.previousSibling.style.borderLeft = 'none';
-            mytable.previousSibling.style.paddingLeft = '0px';
+    }
 
+    window.onbeforeunload = closingCode;
+
+    function closingCode() {
+      if (mynewwindow)
+        mynewwindow.close();
+      return null;
+    }
+
+    function findteacher(x, y) {
+      if (mynewwindow) {
+        var mytable = mynewwindow.document.getElementById(y + 'table');
+        if (mytable) {
+          mytable.previousSibling.scrollIntoView();
+          if (x) {
+            mytable.previousSibling.style.borderLeft = '3px solid red';
+            mytable.previousSibling.style.paddingLeft = '10px';
             for (var j = 1; j < mytable.rows.length; j++) {
               for (var k = 2; k < mytable.rows[j].cells.length; k++) {
                 if (mytable.rows[j].cells[k].innerHTML.indexOf(x) != -1) {
-                  mytable.rows[j].cells[k].style.border = '1px solid black';
+                  mytable.rows[j].cells[k].style.border = '3px solid red';
                 }
               }
             }
-
-
           }
+
         }
 
       }
 
-      function addzero(x) {
-        if (x < 10)
-          return '0' + x;
-        else
-          return x;
+    }
+
+    function cancelfindteacher(x, y) {
+      if (mynewwindow) {
+        var mytable = mynewwindow.document.getElementById(y + 'table');
+        if (mytable) {
+          mytable.previousSibling.style.borderLeft = 'none';
+          mytable.previousSibling.style.paddingLeft = '0px';
+
+          for (var j = 1; j < mytable.rows.length; j++) {
+            for (var k = 2; k < mytable.rows[j].cells.length; k++) {
+              if (mytable.rows[j].cells[k].innerHTML.indexOf(x) != -1) {
+                mytable.rows[j].cells[k].style.border = '1px solid black';
+              }
+            }
+          }
+
+
+        }
       }
 
-      function tableCreate(myplace, myid, x, y, z) {
-        var body = myplace; //document.getElementsByTagName('body')[0];
-        var tbl = document.createElement('table');
-        tbl.style.width = '100%';
-        tbl.setAttribute('border', '3');
-        tbl.setAttribute('id', myid);
-        var tbdy = document.createElement('tbody');
-        for (var i = 0; i < x + 1; i++) {
-          if (i > 0) {
-            for (var k = 0; k < z; k++) {
-              var tr = document.createElement('tr');
-              var temp = 2;
-              if (k == 0)
-                temp = 0;
-              for (var j = 0; j < y + 2 - temp; j++) {
-                if ((j == 0 || j == 1) && (k == 0)) {
-                  // console.log(i+' '+k+' '+j)
-                  var td = document.createElement('td');
-                  tr.appendChild(td);
-                  td.setAttribute('rowSpan', z);
-                  td.setAttribute('border', '2');
-                  td.style.textAlign = 'center';
-                  // td.innerHTML = i+' '+k+' '+j;
-                  if (j == 0) {
-                    td.innerHTML = i;
-                    td.setAttribute('width', '20px;');
-                  }
-                  if (j == 1) {
-                    td.innerHTML = addzero(i + 7) + ':30-' + addzero(i + 8) + ':15';
-                    td.setAttribute('width', '50px;');
-                  }
-                } else {
-                  var td = document.createElement('td');
-                  td.style.height = "20px";
-                  tr.appendChild(td);
-                  td.setAttribute('border', '1');
-                  td.style.textAlign = 'center';
-                  // td.innerHTML = i+' '+k+' '+j;
-                }
+    }
 
-              }
-              tbdy.appendChild(tr);
-            }
-          } else {
+    function addzero(x) {
+      if (x < 10)
+        return '0' + x;
+      else
+        return x;
+    }
+
+    function tableCreate(myplace, myid, x, y, z) {
+      var body = myplace; //document.getElementsByTagName('body')[0];
+      var tbl = document.createElement('table');
+      tbl.style.width = '100%';
+      tbl.setAttribute('border', '3');
+      tbl.setAttribute('id', myid);
+      var tbdy = document.createElement('tbody');
+      for (var i = 0; i < x + 1; i++) {
+        if (i > 0) {
+          for (var k = 0; k < z; k++) {
             var tr = document.createElement('tr');
-            for (var j = 0; j < y + 2; j++) {
-              var td = document.createElement('td');
-              tr.appendChild(td);
-              td.setAttribute('border', '2');
-              td.innerHTML = weekname[j];
+            var temp = 2;
+            if (k == 0)
+              temp = 0;
+            for (var j = 0; j < y + 2 - temp; j++) {
+              if ((j == 0 || j == 1) && (k == 0)) {
+                // console.log(i+' '+k+' '+j)
+                var td = document.createElement('td');
+                tr.appendChild(td);
+                td.setAttribute('rowSpan', z);
+                td.setAttribute('border', '2');
+                td.style.textAlign = 'center';
+                // td.innerHTML = i+' '+k+' '+j;
+                if (j == 0) {
+                  td.innerHTML = i;
+                  td.setAttribute('width', '20px;');
+                }
+                if (j == 1) {
+                  td.innerHTML = addzero(i + 7) + ':30-' + addzero(i + 8) + ':15';
+                  td.setAttribute('width', '50px;');
+                }
+              } else {
+                var td = document.createElement('td');
+                td.style.height = "20px";
+                tr.appendChild(td);
+                td.setAttribute('border', '1');
+                td.style.textAlign = 'center';
+                // td.innerHTML = i+' '+k+' '+j;
+              }
+
             }
             tbdy.appendChild(tr);
           }
-
-
+        } else {
+          var tr = document.createElement('tr');
+          for (var j = 0; j < y + 2; j++) {
+            var td = document.createElement('td');
+            tr.appendChild(td);
+            td.setAttribute('border', '2');
+            td.innerHTML = weekname[j];
+          }
+          tbdy.appendChild(tr);
         }
-        tbl.appendChild(tbdy);
-        return body.appendChild(tbl)
-      }
 
-      // handleSignInClick();
-    </script>
-    <script
-      async
-      defer
-      src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()"
-    ></script>
-    <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
-    <div
-      id="errormessagebox"
-      style="
-        position: fixed;
-        top: 10;
-        margin-left: auto;
-        margin-right: auto;
-        left: 0;
-        right: 0;
-        background-color: black;
-        color: white;
-        text-align: center;
-        z-index: 9999;
-        margin: 20px;
-        padding: 10px;
-      "
-      hidden
-    >
-      ERROR:
-    </div>
-    <div style="position: fixed; top: 10px; opacity: 0.8">
-      <button onclick="drawteacher()">Show Teacher Sheet</button>
-      <button onclick="downloadoutputcsv()">Download CSV</button>
-      <br />
-      <button onclick="downloadallvenuehtml()">Download all venue table</button>
-      <button onclick="downloadallteacherhtml()">
-        Download all teacher table
-      </button>
-      <br />
-      <!-- <button onclick="savedata()">Saved Now Data</button>
+
+      }
+      tbl.appendChild(tbdy);
+      return body.appendChild(tbl)
+    }
+
+    // handleSignInClick();
+  </script>
+  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+  </script>
+  <!-- <button hidden id="useonlinedatabutton" onclick="drawvenue()">Use Online Data</button> -->
+  <div id="errormessagebox"
+    style="position: fixed; top: 10; margin-left: auto; margin-right: auto; left: 0; right: 0; background-color: black; color: white; text-align: center; z-index: 9999; margin: 20px; padding: 10px;"
+    hidden>
+    ERROR:
+  </div>
+  <div style="position: fixed;top: 10px;  opacity: 0.8; ">
+    <button onclick="drawteacher()">Show Teacher Sheet</button>
+    <button onclick="downloadoutputcsv()">Download CSV</button>
+    <br>
+    <button onclick="downloadallvenuehtml()">Download all venue table</button>
+    <button onclick="downloadallteacherhtml()">Download all teacher table</button>
+    <br>
+    <!-- <button onclick="savedata()">Saved Now Data</button>
     <button onclick="loadsaveddata()">Load Saved Data</button>
     <button onclick="deletesaveddata()">Delete Saved Data</button> -->
-    </div>
-    <div style="margin-top: 100px"></div>
+  </div>
+  <div style="margin-top: 100px;"></div>
 
-    <div id="myshowsheet"></div>
-    <br />
-    <div style="height: 50%"></div>
-    <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
-    <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
-    <br /><br />
-    <a
-      href="https://docs.google.com/spreadsheets/d/1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc/edit?usp=sharing"
-      target="_blank"
-      >Google Sheet</a
-    >
-    <div hidden id="popupform" class="popupform" style=""></div>
-    <!-- <div hidden id="popupform" class="popupform"></div> -->
-    <!--  <iframe src="" name="myiframe"></iframe>
+  <div id="myshowsheet"></div>
+  <br>
+  <div style="height: 50%;"></div>
+  <button id="signin-button" onclick="handleSignInClick()">Sign in</button>
+  <button id="signout-button" onclick="handleSignOutClick()">Sign out</button>
+  <br><br>
+  <a href="https://docs.google.com/spreadsheets/d/1L9EE_TMbW_zIGAWe0Ji-PlLS2Vlt_-endigUhjRDEvc/edit?usp=sharing"
+    target="_blank">Google Sheet</a>
+  <div hidden id="popupform" class="popupform" style=""></div>
+  <!-- <div hidden id="popupform" class="popupform"></div> -->
+  <!--  <iframe src="" name="myiframe"></iframe>
     <form id="saveform" action="https://docs.google.com/forms/d/e/1FAIpQLScep0u_BDe6DnXO0Z-R4wP6b2gjYtb5ooWDNBOjzKoYHfJR2w/formResponse" target="myiframe" method="POST">
       <textarea id="savename" name="entry.850665707"></textarea>
       <textarea id="savevenuejson" name="entry.427184041"></textarea>
       <textarea id="saveteacherjson" name="entry.1065539477"></textarea>
     </form> -->
-  </body>
+
+</body>
+
 </html>
