@@ -413,7 +413,7 @@
         if (tempct < 2) {
           // fillct+=2-tempct;
           venuejson[mycoursedata[j][0]].fillct += 2 - tempct;
-          console.log(mycoursedata[j][5], j)
+          // console.log(mycoursedata[j][5], j)
           teacherjson[mycoursedata[j][5]].fillct += 2 - tempct;
         }
 
@@ -441,7 +441,7 @@
             venuejson[mycoursedata[j][0]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
               mycoursedata[j][6]
             ] = mycoursedata[j][5];
-            console.log(mycoursedata[j][5],j)
+            // console.log(mycoursedata[j][5],j)
             teacherjson[mycoursedata[j][5]].data[parseInt(tempslot.substring(1))][weeknameshort[tempslot[0]]][
               mycoursedata[j][6]
             ] = mycoursedata[j][0];
